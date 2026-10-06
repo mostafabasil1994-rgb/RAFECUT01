@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAFECUT | منصة خدمات الإنتاج</title>
+  <meta name="description" content="RAFECUT — منصة متكاملة لخدمات الإنتاج: مواقع التصوير، المعدات والطاقم، الفنادق والمطاعم، والمونتاج وتصحيح الألوان.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=El+Messiri:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============ Header ============ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="#home" class="logo" aria-label="RAFECUT - الرئيسية">
+        <img src="assets/logo-mark.svg" alt="" class="logo-mark" width="38" height="38">
+        <span class="logo-text">RAFECUT</span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="القائمة الرئيسية">
+        <a href="#home" class="nav-link">الرئيسية</a>
+        <a href="#locations" class="nav-link">مواقع التصوير</a>
+        <a href="#equipment" class="nav-link">المعدات والطاقم</a>
+        <a href="#hospitality" class="nav-link">الفنادق والمطاعم</a>
+        <a href="#post" class="nav-link">المونتاج والتلوين</a>
+        <a href="#contact" class="nav-link">تواصل معنا</a>
+        <a href="#planner" class="btn btn-gold btn-sm nav-cta">ابدأ مشروعك</a>
+      </nav>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ 1. Home / Hero ============ -->
+    <section class="hero" id="home">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-grain" aria-hidden="true"></div>
+      <div class="container hero-content">
+        <p class="eyebrow reveal">منصة خدمات الإنتاج المتكاملة</p>
+        <h1 class="hero-title reveal">كل ما يحتاجه إنتاجك،<br><span class="gold">في مكان واحد</span></h1>
+        <p class="hero-sub reveal">من موقع التصوير إلى اللقطة الأخيرة في غرفة التلوين — نجمع لصنّاع الأفلام والإعلانات كل الخدمات في منصة واحدة.</p>
+        <div class="hero-actions reveal">
+          <a href="#planner" class="btn btn-gold">ابدأ مشروعك</a>
+          <a href="#services" class="btn btn-ghost">استكشف الخدمات</a>
+        </div>
+      </div>
+      <a href="#about" class="scroll-hint" aria-label="انتقل للأسفل"><span></span></a>
+    </section>
+
+    <!-- Intro -->
+    <section class="section about" id="about">
+      <div class="container about-grid">
+        <div class="reveal">
+          <p class="eyebrow"><span class="num">01</span> عن RAFECUT</p>
+          <h2 class="section-title">منصة واحدة.<br>إنتاج بلا تعقيد.</h2>
+        </div>
+        <div class="reveal">
+          <p class="lead">RAFECUT هي منصة تجمع كل ما يحتاجه صانع المحتوى المرئي في رحلة واحدة: تختار موقع التصوير، تستأجر المعدات، تتواصل مع الطاقم، تحجز إقامة فريقك ووجباته، ثم تسلّم موادك لفريق ما بعد الإنتاج — دون التنقل بين عشرات الموردين.</p>
+          <div class="stats">
+            <div class="stat"><strong data-count="120">+120</strong><span>موقع تصوير</span></div>
+            <div class="stat"><strong data-count="850">+850</strong><span>قطعة معدات</span></div>
+            <div class="stat"><strong data-count="300">+300</strong><span>محترف في الطاقم</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="section services" id="services">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow"><span class="num">02</span> خدماتنا</p>
+          <h2 class="section-title">أربع خدمات، رحلة إنتاج كاملة</h2>
+        </div>
+        <div class="services-grid" id="servicesGrid"></div>
+      </div>
+    </section>
+
+    <!-- Planner -->
+    <section class="section planner" id="planner">
+      <div class="container planner-grid">
+        <div class="planner-intro reveal">
+          <p class="eyebrow"><span class="num">03</span> خطّط لمشروعك</p>
+          <h2 class="section-title">أخبرنا عن مشروعك،<br>ونجهّز لك العرض</h2>
+          <p class="muted">حدّد تفاصيل إنتاجك وسيتواصل معك منسّق إنتاج خلال 24 ساعة بعرض سعر مفصّل يشمل كل الخدمات التي اخترتها.</p>
+          <ul class="checklist">
+            <li>عرض سعر واحد لكل الخدمات</li>
+            <li>منسّق إنتاج مخصّص لمشروعك</li>
+            <li>دون أي التزام مسبق</li>
+          </ul>
+        </div>
+
+        <form class="card form planner-form reveal" id="plannerForm" novalidate>
+          <fieldset>
+            <legend>نوع المشروع</legend>
+            <div class="chips" role="radiogroup">
+              <label class="chip"><input type="radio" name="type" value="فيلم" required><span>فيلم</span></label>
+              <label class="chip"><input type="radio" name="type" value="إعلان تجاري"><span>إعلان تجاري</span></label>
+              <label class="chip"><input type="radio" name="type" value="فيديو كليب"><span>فيديو كليب</span></label>
+              <label class="chip"><input type="radio" name="type" value="فيلم وثائقي"><span>فيلم وثائقي</span></label>
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label for="budget">الميزانية التقريبية: <output id="budgetOut" class="gold">50,000 ر.س</output></label>
+            <input type="range" id="budget" name="budget" min="10000" max="1000000" step="10000" value="50000">
+            <div class="range-labels"><span>10 آلاف</span><span>مليون+</span></div>
+          </div>
+
+          <fieldset>
+            <legend>الخدمات المطلوبة</legend>
+            <div class="checks">
+              <label class="check"><input type="checkbox" name="services" value="موقع تصوير"><span>موقع التصوير</span></label>
+              <label class="check"><input type="checkbox" name="services" value="معدات"><span>المعدات</span></label>
+              <label class="check"><input type="checkbox" name="services" value="طاقم عمل"><span>طاقم العمل</span></label>
+              <label class="check"><input type="checkbox" name="services" value="فندق"><span>الفندق</span></label>
+              <label class="check"><input type="checkbox" name="services" value="الطعام"><span>الطعام</span></label>
+              <label class="check"><input type="checkbox" name="services" value="مونتاج وتلوين"><span>المونتاج والتلوين</span></label>
+            </div>
+          </fieldset>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="pDate">تاريخ التصوير</label>
+              <input type="date" id="pDate" name="date" required>
+            </div>
+            <div class="field">
+              <label for="pCity">المدينة</label>
+              <select id="pCity" name="city" required>
+                <option value="">اختر المدينة</option>
+                <option>الرياض</option><option>جدة</option><option>العلا</option>
+                <option>أبها</option><option>الدمام</option><option>تبوك</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="pCrew">حجم الطاقم</label>
+              <input type="number" id="pCrew" name="crew" min="1" max="500" placeholder="مثال: 15" required>
+            </div>
+          </div>
+
+          <p class="form-error" id="plannerError" role="alert" hidden></p>
+          <button type="submit" class="btn btn-gold btn-block">اطلب عرض سعر</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ 2. Locations ============ -->
+    <section class="section" id="locations">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow"><span class="num">04</span> مواقع التصوير</p>
+          <h2 class="section-title">مواقع تصنع المشهد</h2>
+          <p class="muted">من الاستوديوهات المجهّزة إلى المواقع التراثية والطبيعة البكر.</p>
+        </div>
+
+        <div class="filters reveal" id="locationFilters">
+          <div class="field">
+            <label for="fCity">المدينة</label>
+            <select id="fCity"><option value="all">كل المدن</option></select>
+          </div>
+          <div class="field">
+            <label for="fType">نوع الموقع</label>
+            <select id="fType">
+              <option value="all">كل الأنواع</option>
+              <option value="indoor">داخلي</option>
+              <option value="outdoor">خارجي</option>
+              <option value="nature">طبيعة</option>
+              <option value="heritage">تراثي</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fPrice">نطاق السعر اليومي</label>
+            <select id="fPrice">
+              <option value="all">كل الأسعار</option>
+              <option value="0-3000">أقل من 3,000 ر.س</option>
+              <option value="3000-6000">3,000 – 6,000 ر.س</option>
+              <option value="6000-999999">أكثر من 6,000 ر.س</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" id="fReset">إعادة تعيين</button>
+        </div>
+
+        <div class="grid cards-3" id="locationsGrid"></div>
+        <p class="empty" id="locationsEmpty" hidden>لا توجد مواقع مطابقة لاختيارك. جرّب تغيير الفلاتر.</p>
+      </div>
+    </section>
+
+    <!-- ============ 3. Equipment & Crew ============ -->
+    <section class="section alt" id="equipment">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow"><span class="num">05</span> المعدات والطاقم</p>
+          <h2 class="section-title">أدوات المحترفين وأيديهم</h2>
+        </div>
+
+        <div class="tabs reveal" role="tablist" data-tabs="equip">
+          <button class="tab active" role="tab" aria-selected="true" data-tab="gear">معدات التصوير</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="crew">طاقم العمل</button>
+        </div>
+
+        <div class="tab-panel active" data-panel="gear">
+          <div class="chips chips-filter" id="gearFilter">
+            <button class="chip-btn active" data-cat="all">الكل</button>
+            <button class="chip-btn" data-cat="camera">كاميرات</button>
+            <button class="chip-btn" data-cat="lighting">إضاءة</button>
+            <button class="chip-btn" data-cat="sound">صوت</button>
+            <button class="chip-btn" data-cat="drone">درون</button>
+          </div>
+          <div class="grid cards-4" id="gearGrid"></div>
+        </div>
+
+        <div class="tab-panel" data-panel="crew">
+          <div class="grid cards-4" id="crewGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4. Hotels & Restaurants ============ -->
+    <section class="section" id="hospitality">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow"><span class="num">06</span> الفنادق والمطاعم</p>
+          <h2 class="section-title">راحة فريقك جزء من الإنتاج</h2>
+        </div>
+
+        <div class="tabs-row reveal">
+          <div class="tabs" role="tablist" data-tabs="hosp">
+            <button class="tab active" role="tab" aria-selected="true" data-tab="hotels">الفنادق</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="restaurants">المطاعم</button>
+          </div>
+          <div class="field inline">
+            <label for="fBudget">الميزانية</label>
+            <select id="fBudget">
+              <option value="all">الكل</option>
+              <option value="1">اقتصادي</option>
+              <option value="2">متوسط</option>
+              <option value="3">فاخر</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="tab-panel active" data-panel="hotels">
+          <div class="grid cards-3" id="hotelsGrid"></div>
+        </div>
+        <div class="tab-panel" data-panel="restaurants">
+          <div class="grid cards-3" id="restaurantsGrid"></div>
+        </div>
+        <p class="empty" id="hospEmpty" hidden>لا توجد نتائج ضمن هذه الميزانية.</p>
+      </div>
+    </section>
+
+    <!-- ============ 5. Post-production ============ -->
+    <section class="section alt" id="post">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow"><span class="num">07</span> المونتاج وتصحيح الألوان</p>
+          <h2 class="section-title">حيث تكتمل الحكاية</h2>
+          <p class="muted">فريق ما بعد الإنتاج لدينا يحوّل ساعات التصوير إلى عمل متماسك بصريًا وصوتيًا، بأحدث أنظمة المونتاج والتلوين.</p>
+        </div>
+
+        <div class="grid cards-4 post-services" id="postServices"></div>
+
+        <div class="pricing" id="pricing"></div>
+
+        <div class="center reveal">
+          <button class="btn btn-gold" data-action="request-post">اطلب الخدمة</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6. Contact ============ -->
+    <section class="section" id="contact">
+      <div class="container contact-grid">
+        <div class="reveal">
+          <p class="eyebrow"><span class="num">08</span> تواصل معنا</p>
+          <h2 class="section-title">لنبدأ الحديث<br>عن مشروعك القادم</h2>
+          <ul class="contact-list">
+            <li><span class="ci" data-icon="mail"></span><a href="mailto:hello@rafecut.com">hello@rafecut.com</a></li>
+            <li><span class="ci" data-icon="phone"></span><a href="tel:+966500000000" dir="ltr">+966 50 000 0000</a></li>
+            <li><span class="ci" data-icon="pin"></span><span>طريق الملك فهد، الرياض، المملكة العربية السعودية</span></li>
+          </ul>
+          <div class="socials" aria-label="حسابات التواصل الاجتماعي">
+            <a href="#" aria-label="إنستغرام" data-icon="instagram"></a>
+            <a href="#" aria-label="إكس" data-icon="x"></a>
+            <a href="#" aria-label="يوتيوب" data-icon="youtube"></a>
+            <a href="#" aria-label="لينكدإن" data-icon="linkedin"></a>
+            <a href="#" aria-label="فيميو" data-icon="vimeo"></a>
+          </div>
+        </div>
+
+        <form class="card form reveal" id="contactForm" novalidate>
+          <div class="field-row two">
+            <div class="field">
+              <label for="cName">الاسم</label>
+              <input id="cName" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="cEmail">البريد الإلكتروني</label>
+              <input id="cEmail" name="email" type="email" autocomplete="email" dir="ltr" required>
+            </div>
+          </div>
+          <div class="field-row two">
+            <div class="field">
+              <label for="cPhone">رقم الجوال</label>
+              <input id="cPhone" name="phone" type="tel" autocomplete="tel" dir="ltr" placeholder="+966 5x xxx xxxx">
+            </div>
+            <div class="field">
+              <label for="cType">نوع الاستفسار</label>
+              <select id="cType" name="type" required>
+                <option value="">اختر النوع</option>
+                <option>طلب عرض سعر</option>
+                <option>حجز موقع تصوير</option>
+                <option>استئجار معدات</option>
+                <option>الانضمام كمزوّد خدمة</option>
+                <option>استفسار عام</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="cMsg">الرسالة</label>
+            <textarea id="cMsg" name="message" rows="5" required></textarea>
+          </div>
+          <p class="form-error" id="contactError" role="alert" hidden></p>
+          <button type="submit" class="btn btn-gold btn-block">إرسال الرسالة</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ Footer ============ -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="#home" class="logo">
+          <img src="assets/logo-mark.svg" alt="" class="logo-mark" width="38" height="38">
+          <span class="logo-text">RAFECUT</span>
+        </a>
+        <p class="muted">كل ما يحتاجه إنتاجك، في مكان واحد.</p>
+      </div>
+      <nav class="footer-links" aria-label="روابط التذييل">
+        <a href="#home">الرئيسية</a>
+        <a href="#locations">مواقع التصوير</a>
+        <a href="#equipment">المعدات والطاقم</a>
+        <a href="#hospitality">الفنادق والمطاعم</a>
+        <a href="#post">المونتاج والتلوين</a>
+        <a href="#contact">تواصل معنا</a>
+      </nav>
+    </div>
+    <div class="container footer-bottom">
+      <p>© <span id="year"></span> RAFECUT. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
+  <!-- ============ Modal ============ -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-box">
+      <button class="modal-x" data-close aria-label="إغلاق">×</button>
+      <div class="modal-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <h3 id="modalTitle"></h3>
+      <p id="modalText" class="muted"></p>
+      <ul id="modalList" class="modal-list"></ul>
+      <button class="btn btn-gold" data-close>حسنًا</button>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
