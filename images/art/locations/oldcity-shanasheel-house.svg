@@ -2,7 +2,7 @@
 <defs>
 <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16130e"/><stop offset="1" stop-color="#0a0a0a"/></linearGradient>
 <radialGradient id="glow" cx="1060" cy="200" r="620" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c9a24a" stop-opacity=".22"/><stop offset=".4" stop-color="#c9a24a" stop-opacity=".09"/><stop offset="1" stop-color="#c9a24a" stop-opacity="0"/></radialGradient>
-<radialGradient id="sun" cx="1088" cy="182" r="140" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f3efe7" stop-opacity=".75"/><stop offset=".12" stop-color="#f3efe7" stop-opacity=".45"/><stop offset=".35" stop-color="#e4c675" stop-opacity=".22"/><stop offset="1" stop-color="#e4c675" stop-opacity="0"/></radialGradient>
+<radialGradient id="sun" cx="1088" cy="182" r="140" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f3efe7" stop-opacity=".6"/><stop offset=".09" stop-color="#e4c675" stop-opacity=".55"/><stop offset=".3" stop-color="#e4c675" stop-opacity=".2"/><stop offset="1" stop-color="#e4c675" stop-opacity="0"/></radialGradient>
 <radialGradient id="vig" cx="600" cy="450" r="760" gradientUnits="userSpaceOnUse"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>
 <linearGradient id="rake" x1="800" y1="0" x2="0" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c9a24a" stop-opacity=".22"/><stop offset=".55" stop-color="#c9a24a" stop-opacity=".09"/><stop offset="1" stop-color="#c9a24a" stop-opacity=".03"/></linearGradient>
 <linearGradient id="laneW" x1="0" y1="30" x2="0" y2="780" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c9a24a" stop-opacity=".34"/><stop offset="1" stop-color="#c9a24a" stop-opacity=".1"/></linearGradient>
@@ -11,7 +11,7 @@
 <linearGradient id="far" x1="0" y1="480" x2="0" y2="660" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e4c675" stop-opacity=".5"/><stop offset="1" stop-color="#f3efe7" stop-opacity=".62"/></linearGradient>
 <linearGradient id="streak" x1="0" y1="660" x2="0" y2="900" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e4c675" stop-opacity=".16"/><stop offset="1" stop-color="#e4c675" stop-opacity="0"/></linearGradient>
 <linearGradient id="passW" x1="270" y1="0" x2="318" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c9a24a" stop-opacity="0"/><stop offset="1" stop-color="#c9a24a" stop-opacity=".2"/></linearGradient>
-<linearGradient id="iwanW" x1="300" y1="480" x2="560" y2="716" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e4c675" stop-opacity=".42"/><stop offset="1" stop-color="#c9a24a" stop-opacity=".2"/></linearGradient>
+<linearGradient id="iwanW" x1="300" y1="480" x2="560" y2="716" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e4c675" stop-opacity=".6"/><stop offset="1" stop-color="#c9a24a" stop-opacity=".28"/></linearGradient>
 <radialGradient id="warm" cx="693" cy="228" r="120" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f3efe7" stop-opacity=".8"/><stop offset=".5" stop-color="#e4c675" stop-opacity=".6"/><stop offset="1" stop-color="#c9a24a" stop-opacity=".4"/></radialGradient>
 <radialGradient id="bloom" cx="693" cy="228" r="170" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e4c675" stop-opacity=".14"/><stop offset="1" stop-color="#e4c675" stop-opacity="0"/></radialGradient>
 
@@ -168,12 +168,13 @@
     <path d="M362 716V610C362 570 400 540 431 530C462 540 500 570 500 610V716" fill="none" stroke="#e4c675" stroke-width="2.5"/>
     <!-- courtyard floor -->
     <rect x="300" y="716" width="300" height="52" fill="#3a3222"/>
-    <path d="M300 716H600V736L300 748Z" fill="#e4c675" opacity=".24"/>
+    <path d="M300 716H600V736L300 748Z" fill="#e4c675" opacity=".36"/>
     <path d="M300 748L600 736V768H300Z" fill="#0a0a0a" opacity=".35"/>
     <path d="M300 728H600M300 745H600M360 716L300 760M420 716L380 768M480 716L460 768M540 716L540 768" stroke="#8a7442" stroke-width="1" opacity=".55"/>
     <ellipse cx="432" cy="732" rx="34" ry="6" fill="#15130f" stroke="#c9a24a" stroke-width="2"/>
     <path d="M412 731H448" stroke="#f3efe7" stroke-width="1.5" opacity=".45" stroke-linecap="round"/>
-    <path d="M560 470H600L470 768H398Z" fill="#e4c675" opacity=".1"/>
+    <path d="M560 470H600L470 768H398Z" fill="#e4c675" opacity=".14"/>
+    <path d="M300 470H600V500L300 540Z" fill="#f3efe7" opacity=".12"/>
   </g>
   <!-- passage -->
   <path d="M270 780V610L318.3 606.5V764.6Z" fill="#15130f"/>
@@ -218,20 +219,22 @@
 <path d="M258 780H552" stroke="#e4c675" stroke-width="2" stroke-linecap="round"/>
 
 <!-- cast shadows of the oriels -->
-<path d="M220 116H585V380L425 460H60V196Z" fill="#0a0a0a" opacity=".58"/>
-<path d="M630 155H795V400L635 480H470V235Z" fill="#0a0a0a" opacity=".55"/>
+<path d="M220 116H585V380L425 460H60V196Z" fill="#0a0a0a" opacity=".66"/>
+<path d="M630 155H795V400L635 480H470V235Z" fill="#0a0a0a" opacity=".62"/>
 <!-- lattice light pattern thrown on the wall -->
 <path d="M77 372V251C77 240 97 233 106.5 230C116 233 136 240 136 251V372ZM143 372V251C143 240 163 233 173 230C183 233 203 240 203 251V372Z" fill="#e4c675" opacity=".06"/>
-<path d="M77 372V251C77 240 97 233 106.5 230C116 233 136 240 136 251V372ZM143 372V251C143 240 163 233 173 230C183 233 203 240 203 251V372Z" fill="url(#latL)" opacity=".42"/>
+<path d="M77 372V251C77 240 97 233 106.5 230C116 233 136 240 136 251V372ZM143 372V251C143 240 163 233 173 230C183 233 203 240 203 251V372Z" fill="url(#latL)" opacity=".55"/>
 <path d="M77 312H203" stroke="#0a0a0a" stroke-width="6" opacity=".5"/>
 
 <!-- SHANASHEEL B (lamp-lit) -->
-<path d="M611 386H775L790 400H640Z" fill="#0a0a0a" stroke="#8a7442" stroke-width="1.5"/>
-<g fill="#15130f" stroke="#c9a24a" stroke-width="2" stroke-linejoin="round">
-  <path d="M608 386H622Q624 412 648 428H639Q611 414 608 386Z"/>
-  <path d="M686 386H700Q702 412 720 428H711Q689 414 686 386Z"/>
-  <path d="M764 386H778Q780 412 791 428H782Q767 414 764 386Z"/>
+<path d="M611 386H775L788 428H643Z" fill="#15130f" stroke="#c9a24a" stroke-width="2" stroke-linejoin="round"/>
+<g fill="#2a2519" stroke="#c9a24a" stroke-width="1.8" stroke-linejoin="round">
+  <path d="M611 386H628L652 428H643Z"/>
+  <path d="M684 386H701L721 428H712Z"/>
+  <path d="M758 386H775L788 428H779Z"/>
 </g>
+<path d="M628 386L652 428M701 386L721 428M775 386L788 428" stroke="#e4c675" stroke-width="1.5" opacity=".7"/>
+<path d="M598 135H611L640 170H630Z" fill="#0a0a0a"/>
 <path d="M775 135L790 170V400L775 386Z" fill="#3a3222" stroke="#c9a24a" stroke-width="2" stroke-linejoin="round"/>
 <path d="M775 135L790 170V400L775 386Z" fill="#c9a24a" opacity=".3"/>
 <rect x="611" y="135" width="164" height="251" fill="#2a2519"/>
@@ -248,7 +251,6 @@
 <use href="#star" transform="translate(745 345) scale(.7)"/>
 <rect x="611" y="135" width="164" height="251" fill="none" stroke="#c9a24a" stroke-width="3" stroke-linejoin="round"/>
 <path d="M775 135V386" stroke="#e4c675" stroke-width="3" stroke-linecap="round"/>
-<path d="M598 135H611L640 170H630Z" fill="#0a0a0a"/>
 <path d="M775 135H785L797 170H790Z" fill="#0a0a0a"/>
 <path d="M785 116L797 155V170L785 135Z" fill="#3a3222" stroke="#c9a24a" stroke-width="1.5" stroke-linejoin="round"/>
 <rect x="598" y="116" width="187" height="19" fill="#2a2519" stroke="#c9a24a" stroke-width="2.5" stroke-linejoin="round"/>
@@ -257,18 +259,19 @@
 <rect x="520" y="60" width="350" height="340" fill="url(#bloom)"/>
 
 <!-- SHANASHEEL A (sunlit) -->
-<path d="M164 364H535L570 380H230Z" fill="#0a0a0a" stroke="#8a7442" stroke-width="1.5"/>
-<g fill="#1d1a14" stroke="#c9a24a" stroke-width="2" stroke-linejoin="round">
-  <path d="M165 364H179Q181 402 242 428H232Q168 406 165 364Z"/>
-  <path d="M238 364H252Q254 402 309 428H299Q241 406 238 364Z"/>
-  <path d="M311 364H325Q327 402 376 428H366Q314 406 311 364Z"/>
-  <path d="M383 364H397Q399 402 442 428H432Q386 406 383 364Z"/>
-  <path d="M455 364H469Q471 402 508 428H498Q458 406 455 364Z"/>
-  <path d="M523 364H537Q539 402 571 428H561Q526 406 523 364Z"/>
+<path d="M164 364H535L566 428H237Z" fill="#15130f" stroke="#c9a24a" stroke-width="2" stroke-linejoin="round"/>
+<path d="M164 364H535L566 428H237Z" fill="#c9a24a" opacity=".07"/>
+<g fill="#2a2519" stroke="#c9a24a" stroke-width="1.8" stroke-linejoin="round">
+  <path d="M164 364H182L242 428H232Z"/>
+  <path d="M236 364H254L310 428H300Z"/>
+  <path d="M309 364H327L377 428H367Z"/>
+  <path d="M381 364H399L443 428H433Z"/>
+  <path d="M453 364H471L509 428H499Z"/>
+  <path d="M517 364H535L566 428H556Z"/>
 </g>
-<g fill="none" stroke="#e4c675" stroke-width="1.6" stroke-linecap="round" opacity=".8">
-  <path d="M179 364Q181 402 242 428M252 364Q254 402 309 428M325 364Q327 402 376 428M397 364Q399 402 442 428M469 364Q471 402 508 428M537 364Q539 402 571 428"/>
-</g>
+<path d="M182 364L242 428M254 364L310 428M327 364L377 428M399 364L443 428M471 364L509 428M535 364L566 428" stroke="#e4c675" stroke-width="1.5" opacity=".7"/>
+<path d="M176 380L224 386M248 380L294 386M320 380L363 386M392 380L431 386M463 380L498 386M528 380L556 386" stroke="#8a7442" stroke-width="1.5"/>
+<path d="M150 91H164L230 130H220Z" fill="#0a0a0a"/>
 <!-- side face -->
 <path d="M535 91L570 130V380L535 364Z" fill="#3a3222"/>
 <path d="M535 91L570 130V380L535 364Z" fill="#c9a24a" opacity=".32"/>
@@ -294,7 +297,6 @@
 <rect x="164" y="91" width="371" height="273" fill="none" stroke="#c9a24a" stroke-width="3" stroke-linejoin="round"/>
 <path d="M535 91V364" stroke="#e4c675" stroke-width="3" stroke-linecap="round"/>
 <!-- canopy -->
-<path d="M150 91H164L230 130H220Z" fill="#0a0a0a"/>
 <path d="M535 91H550L585 130H570Z" fill="#0a0a0a"/>
 <path d="M550 74L585 116V130L550 91Z" fill="#3a3222" stroke="#c9a24a" stroke-width="1.5" stroke-linejoin="round"/>
 <path d="M550 74L585 116V130L550 91Z" fill="#c9a24a" opacity=".3"/>
