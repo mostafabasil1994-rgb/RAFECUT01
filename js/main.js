@@ -59,6 +59,7 @@
     house: '<path d="M3 11l9-7 9 7M5 9.5V20h14V9.5M10 20v-6h4v6"/>',
     alley: '<path d="M3 3l6 4v14M21 3l-6 4v14M9 21h6M9 11h6"/>',
     lens: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 7l3.5 8M7.5 9.5l8.5 1M8.5 15.5L14 8"/>',
+    clapper: '<rect x="3" y="10" width="18" height="11" rx="1.5"/><path d="M3 10l17.2-3.1-.9-3.8L2.4 6.2z"/><path d="M7.2 5.4l2.4 3.4M12 4.5l2.4 3.4M16.8 3.6l2.3 3.3M3 14h18"/>',
     bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
     star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
     mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6l8.5 7 8.5-7"/>',
@@ -87,7 +88,7 @@
 
   /* Add-to-pack buttons: items are identified by their image file name */
   const slugOf = (img) => (img ? img.split("/").pop().replace(/\.\w+$/, "") : "");
-  const addBtn = (kind, id) => `<button class="btn btn-gold btn-sm add-btn" data-add="${kind}" data-id="${esc(id)}">${ui().pack.add}</button>`;
+  const addBtn = (kind, id) => `<button class="btn btn-gold btn-sm add-btn" data-add="${kind}" data-id="${esc(id)}" aria-label="${esc(ui().pack.addLabel)}">${icon("clapper")}<span>${ui().pack.add}</span></button>`;
 
   /* Booking buttons carry their modal content in data attributes */
   const bookBtn = (cls, kind, name, extra, text) =>
@@ -452,7 +453,7 @@
     contactTried = false;
   });
 
-  /* ---------- Build your package (اصنع حزمتك) ---------- */
+  /* ---------- Build your package (اصنع حزمتك) — the cart is called كلاكيت (Clapperboard) ---------- */
   const PACK_KEY = "rafecut-pack";
   const CATALOG = {
     location: { list: () => LOCATIONS, price: () => LOCATION_RATE, unit: "days", qty: false },
@@ -538,7 +539,8 @@
     $$("[data-add]").forEach((b) => {
       const inPack = pack.items.some((it) => it.kind === b.dataset.add && it.id === b.dataset.id);
       b.classList.toggle("added", inPack);
-      b.textContent = inPack ? ui().pack.inPack : ui().pack.add;
+      b.querySelector("span").textContent = inPack ? ui().pack.inPack : ui().pack.add;
+      b.setAttribute("aria-label", inPack ? ui().pack.inPack : ui().pack.addLabel);
     });
   }
 
@@ -563,7 +565,7 @@
     if (!pack.items.length) {
       $("#packItems").innerHTML = `
         <div class="pack-empty">
-          <span class="pack-empty-icon">${icon("bag")}</span>
+          <span class="pack-empty-icon">${icon("clapper")}</span>
           <p>${P.empty}</p>
           <a href="#locations" class="btn btn-ghost btn-sm" data-pack-close>${P.browse}</a>
         </div>`;

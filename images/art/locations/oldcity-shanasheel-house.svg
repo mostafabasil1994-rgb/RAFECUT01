@@ -57,7 +57,7 @@
 <path d="M926 366H1012V432H926Z" fill="#1d1a14" stroke="#c9a24a" stroke-width="2"/>
 <path d="M932 372H1006V420H932Z" fill="url(#lat)" opacity=".7"/>
 <path d="M920 360H1018" stroke="#e4c675" stroke-width="3" stroke-linecap="round"/>
-<path d="M940 432L946 448M969 432V450M998 432L992 448" stroke="#c9a24a" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M926 432H1012L1000 450H938Z" fill="#0a0a0a" stroke="#c9a24a" stroke-width="2" stroke-linejoin="round"/>
 
 <!-- lane left wall (side of the house, sunlit) -->
 <path d="M800 30L888 321V660L800 780Z" fill="#2a2519"/>
@@ -270,7 +270,6 @@
   <path d="M517 364H535L566 428H556Z"/>
 </g>
 <path d="M182 364L242 428M254 364L310 428M327 364L377 428M399 364L443 428M471 364L509 428M535 364L566 428" stroke="#e4c675" stroke-width="1.5" opacity=".7"/>
-<path d="M176 380L224 386M248 380L294 386M320 380L363 386M392 380L431 386M463 380L498 386M528 380L556 386" stroke="#8a7442" stroke-width="1.5"/>
 <path d="M150 91H164L230 130H220Z" fill="#0a0a0a"/>
 <!-- side face -->
 <path d="M535 91L570 130V380L535 364Z" fill="#3a3222"/>
@@ -311,6 +310,7 @@
 <g clip-path="url(#gC)">
   <path d="M905 660H1033L1181 900H560Z" fill="url(#streak)"/>
   <path d="M270 780H540L311 900H-106Z" fill="url(#streak)"/>
+  <path d="M280 780H530L380 840H130Z" fill="#e4c675" opacity=".07"/>
   <path d="M120 780L-338 900M240 780L-153 900M360 780L33 900M480 780L218 900M600 780L404 900M720 780L589 900M905 660L773 900M935 660L875 900M965 660L977 900M995 660L1079 900M1025 660L1181 900M0 668H1200M0 680H1200M0 695H1200M0 714H1200M0 738H1200M0 768H1200M0 806H1200M0 852H1200" stroke="#8a7442" stroke-width="1.5" stroke-opacity=".3"/>
 </g>
 <path d="M800 780L888 660M1050 660L1200 824" stroke="#c9a24a" stroke-width="2" opacity=".6"/>
@@ -325,8 +325,8 @@
 
 <!-- light beams -->
 <g fill="#e4c675">
-  <path d="M1040 192L1072 206L-20 610L-20 520Z" opacity=".06"/>
-  <path d="M1048 204L1080 216L-20 770L-20 690Z" opacity=".05"/>
+  <path d="M1040 192L1072 206L-20 610L-20 520Z" opacity=".075"/>
+  <path d="M1048 204L1080 216L-20 770L-20 690Z" opacity=".06"/>
   <path d="M1055 212L1085 222L330 900L170 900Z" opacity=".045"/>
 </g>
 

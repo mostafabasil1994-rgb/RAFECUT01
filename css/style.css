@@ -532,6 +532,7 @@ input[type="range"]::-moz-range-thumb {
   background: var(--gold); color: #0a0a0a; font-size: 0.72rem; font-weight: 800; line-height: 1;
 }
 
+.add-btn svg { width: 16px; height: 16px; flex: none; }
 .add-btn.added { background: transparent; color: var(--gold); border-color: rgba(201, 162, 74, 0.6); }
 .add-btn.added:hover { background: var(--gold-soft); }
 
