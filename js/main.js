@@ -59,6 +59,7 @@
     house: '<path d="M3 11l9-7 9 7M5 9.5V20h14V9.5M10 20v-6h4v6"/>',
     alley: '<path d="M3 3l6 4v14M21 3l-6 4v14M9 21h6M9 11h6"/>',
     lens: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 7l3.5 8M7.5 9.5l8.5 1M8.5 15.5L14 8"/>',
+    bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
     star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
     mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6l8.5 7 8.5-7"/>',
     phone: '<path d="M5 3h3.5l1.5 4.5-2 1.5a11 11 0 0 0 7 7l1.5-2 4.5 1.5V19a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
@@ -83,6 +84,10 @@
       ${art ? `<img class="art" src="${art}" alt="" aria-hidden="true" loading="lazy" onerror="this.remove()">` : ""}
       ${src ? `<img class="photo" src="${src}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">` : ""}
     </div>`;
+
+  /* Add-to-pack buttons: items are identified by their image file name */
+  const slugOf = (img) => (img ? img.split("/").pop().replace(/\.\w+$/, "") : "");
+  const addBtn = (kind, id) => `<button class="btn btn-gold btn-sm add-btn" data-add="${kind}" data-id="${esc(id)}">${ui().pack.add}</button>`;
 
   /* Booking buttons carry their modal content in data attributes */
   const bookBtn = (cls, kind, name, extra, text) =>
@@ -162,7 +167,11 @@
     if (lastFocus) lastFocus.focus();
   }
   modal.addEventListener("click", (e) => { if (e.target.closest("[data-close]")) closeModal(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) closeModal(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!modal.hidden) closeModal();
+    else if (!$("#pack").hidden) closePack();
+  });
 
   const ref = () => "RC-" + Math.random().toString(36).slice(2, 8).toUpperCase();
   const city = (key) => ui().cities[key] || key;
@@ -212,7 +221,7 @@
           <p class="desc">${tr(l, "desc")}</p>
           <div class="card-foot">
             <p class="price">${price} <small>/ ${per}</small></p>
-            ${bookBtn("btn-gold", "location", name, `${where(l.area)} · ${price} / ${per}`, ui().book)}
+            ${addBtn("location", slugOf(l.img))}
           </div>
         </div>
       </article>`;
@@ -244,7 +253,7 @@
           <p class="meta">${tr(g, "desc")}</p>
           <div class="card-foot">
             <p class="price">${sar(g.price)} <small>/ ${per}</small></p>
-            ${bookBtn("btn-gold", "gear", name, `${sar(g.price)} / ${per}`, ui().rent)}
+            ${addBtn("gear", slugOf(g.img))}
           </div>
         </div>
       </article>`;
@@ -307,7 +316,7 @@
               ${dots(h.level)}
               <p class="price">${price}</p>
             </div>
-            ${bookBtn("btn-gold", kind, name, `${placeOf(h)} · ${priceText}`, ui().book)}
+            ${kind === "hotels" ? addBtn("hotel", slugOf(h.img)) : bookBtn("btn-gold", kind, name, `${placeOf(h)} · ${priceText}`, ui().book)}
           </div>
         </div>
       </article>`;
@@ -443,6 +452,254 @@
     contactTried = false;
   });
 
+  /* ---------- Build your package (اصنع حزمتك) ---------- */
+  const PACK_KEY = "rafecut-pack";
+  const CATALOG = {
+    location: { list: () => LOCATIONS, price: () => LOCATION_RATE, unit: "days", qty: false },
+    gear: { list: () => GEAR, price: (x) => x.price, unit: "days", qty: true, max: (x) => x.qty || 99 },
+    hotel: { list: () => HOTELS, price: (x) => x.price || null, unit: "nights", qty: true, max: () => 50 },
+  };
+  const findItem = (kind, id) => (CATALOG[kind] ? CATALOG[kind].list().find((x) => slugOf(x.img) === id) : null);
+
+  let pack = { from: "", to: "", items: [] };
+  try {
+    const saved = JSON.parse(localStorage.getItem(PACK_KEY) || "null");
+    if (saved && Array.isArray(saved.items)) {
+      pack = {
+        from: typeof saved.from === "string" ? saved.from : "",
+        to: typeof saved.to === "string" ? saved.to : "",
+        items: saved.items.filter((it) => it && findItem(it.kind, it.id)).map((it) => ({
+          kind: it.kind, id: it.id,
+          days: Number.isInteger(it.days) && it.days > 0 ? it.days : null,
+          qty: Number.isInteger(it.qty) && it.qty > 0 ? it.qty : 1,
+        })),
+      };
+    }
+  } catch (_) { /* storage unavailable: start empty */ }
+  const savePack = () => { try { localStorage.setItem(PACK_KEY, JSON.stringify(pack)); } catch (_) { /* ignore */ } };
+
+  const DAY_MS = 86400000;
+  const isoDate = (v) => /^\d{4}-\d{2}-\d{2}$/.test(v);
+  function spanDays() {
+    if (!isoDate(pack.from) || !isoDate(pack.to)) return null;
+    const d = Math.round((Date.parse(pack.to) - Date.parse(pack.from)) / DAY_MS) + 1;
+    return d >= 1 ? d : 0; // 0 = invalid range
+  }
+  const MAX_DAYS = 365;
+  function daysOf(it) {
+    const span = spanDays();
+    const cap = span || MAX_DAYS;
+    return Math.min(Math.max(it.days ?? (span || 1), 1), cap);
+  }
+  function lineOf(it) {
+    const x = findItem(it.kind, it.id), c = CATALOG[it.kind];
+    const unitPrice = x ? c.price(x) : null;
+    const days = daysOf(it), qty = c.qty ? it.qty : 1;
+    return { x, c, unitPrice, days, qty, total: unitPrice == null ? null : unitPrice * days * qty };
+  }
+
+  const packEl = $("#pack"), drawer = $("#packDrawer"), packFrom = $("#packFrom"), packTo = $("#packTo");
+  let packLastFocus = null;
+  function openPack() {
+    if (!packEl.hidden) return;
+    packLastFocus = document.activeElement;
+    renderPack();
+    packEl.hidden = false;
+    requestAnimationFrame(() => packEl.classList.add("show"));
+    document.body.classList.add("no-scroll");
+    $("#packToggle").setAttribute("aria-expanded", "true");
+    hideToast();
+    drawer.focus();
+  }
+  function closePack() {
+    packEl.classList.remove("show");
+    document.body.classList.remove("no-scroll");
+    $("#packToggle").setAttribute("aria-expanded", "false");
+    setTimeout(() => (packEl.hidden = true), 300);
+    if (packLastFocus && document.contains(packLastFocus)) packLastFocus.focus();
+  }
+
+  let toastTimer = 0;
+  function hideToast() { $("#toast").classList.remove("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => ($("#toast").hidden = true), 250); }
+  function showToast(text) {
+    clearTimeout(toastTimer);
+    $("#toastText").textContent = text;
+    $("#toast").hidden = false;
+    requestAnimationFrame(() => $("#toast").classList.add("show"));
+    toastTimer = setTimeout(hideToast, 3500);
+  }
+
+  function updatePackBadges() {
+    const n = pack.items.length;
+    const badge = $("#packCount");
+    badge.textContent = n;
+    badge.hidden = n === 0;
+    $("#packToggle").setAttribute("aria-label", `${plain("pack.name")}${n ? ` (${n})` : ""}`);
+    $$("[data-add]").forEach((b) => {
+      const inPack = pack.items.some((it) => it.kind === b.dataset.add && it.id === b.dataset.id);
+      b.classList.toggle("added", inPack);
+      b.textContent = inPack ? ui().pack.inPack : ui().pack.add;
+    });
+  }
+
+  const stepper = (i, field, value, labelText, atMin, atMax) => `
+    <div class="stepper" role="group" aria-label="${esc(labelText)}">
+      <span class="stepper-label">${labelText}</span>
+      <button type="button" data-act="${field}" data-i="${i}" data-d="-1" aria-label="${ui().pack.dec}: ${esc(labelText)}" ${atMin ? "disabled" : ""}>−</button>
+      <output>${value}</output>
+      <button type="button" data-act="${field}" data-i="${i}" data-d="1" aria-label="${ui().pack.inc}: ${esc(labelText)}" ${atMax ? "disabled" : ""}>+</button>
+    </div>`;
+
+  function renderPack() {
+    const P = ui().pack, span = spanDays();
+    packFrom.value = pack.from;
+    packTo.value = pack.to;
+    packFrom.min = new Date().toISOString().slice(0, 10);
+    packTo.min = pack.from || packFrom.min;
+    const spanEl = $("#packSpan");
+    spanEl.textContent = span === null ? P.pickDates : span === 0 ? P.badRange : P.span(span);
+    spanEl.classList.toggle("bad", span === 0);
+
+    if (!pack.items.length) {
+      $("#packItems").innerHTML = `
+        <div class="pack-empty">
+          <span class="pack-empty-icon">${icon("bag")}</span>
+          <p>${P.empty}</p>
+          <a href="#locations" class="btn btn-ghost btn-sm" data-pack-close>${P.browse}</a>
+        </div>`;
+      $("#packTotals").innerHTML = "";
+      updatePackBadges();
+      return;
+    }
+
+    let grand = 0, onRequest = 0;
+    const groups = ["location", "gear", "hotel"].map((kind) => {
+      const rows = pack.items.map((it, i) => ({ it, i })).filter((r) => r.it.kind === kind);
+      if (!rows.length) return "";
+      let sub = 0, subUnknown = false;
+      const html = rows.map(({ it, i }) => {
+        const L = lineOf(it);
+        const name = tr(L.x, "name");
+        if (L.total == null) { onRequest++; subUnknown = true; } else { sub += L.total; }
+        const unitLabel = L.c.unit === "nights" ? P.nights : P.days;
+        const unitPrice = L.unitPrice == null ? ui().priceOnRequest
+          : `${sar(L.unitPrice)} / ${L.c.unit === "nights" ? ui().per.night : ui().perDay}`;
+        const cap = span || MAX_DAYS;
+        const qtyMax = L.c.qty ? L.c.max(L.x) : 1;
+        return `
+        <div class="pack-row">
+          <div class="pack-info">
+            <strong dir="auto">${name}</strong>
+            <span>${unitPrice}${L.c.qty && L.qty >= qtyMax && it.kind === "gear" ? ` · ${P.maxStock(qtyMax)}` : ""}</span>
+          </div>
+          <div class="pack-ctrls">
+            ${stepper(i, "days", L.days, unitLabel, L.days <= 1, L.days >= cap)}
+            ${L.c.qty ? stepper(i, "qty", L.qty, it.kind === "hotel" ? P.rooms : P.qty, L.qty <= 1, L.qty >= qtyMax) : ""}
+          </div>
+          <div class="pack-line">${L.total == null ? `<small>${ui().priceOnRequest}</small>` : sar(L.total)}</div>
+          <button type="button" class="pack-remove" data-act="remove" data-i="${i}" aria-label="${P.remove}: ${esc(name)}">×</button>
+        </div>`;
+      }).join("");
+      grand += sub;
+      return `
+      <section class="pack-group">
+        <h3>${P.groups[kind]} <span>${P.subtotal}: ${sar(sub)}${subUnknown ? " +" : ""}</span></h3>
+        ${html}
+      </section>`;
+    }).join("");
+    $("#packItems").innerHTML = groups;
+    $("#packTotals").innerHTML = `
+      <p class="pack-total"><span>${P.total}</span><strong>${sar(grand)}</strong></p>
+      ${onRequest ? `<p class="pack-note">${P.onRequest(onRequest)}</p>` : ""}`;
+    updatePackBadges();
+  }
+
+  function addToPack(kind, id) {
+    const x = findItem(kind, id);
+    if (!x) return;
+    if (pack.items.some((it) => it.kind === kind && it.id === id)) { openPack(); return; }
+    pack.items.push({ kind, id, days: null, qty: 1 });
+    savePack();
+    updatePackBadges();
+    if (!packEl.hidden) renderPack();
+    showToast(ui().pack.added(tr(x, "name")));
+  }
+
+  document.addEventListener("click", (e) => {
+    const add = e.target.closest("[data-add]");
+    if (add) { addToPack(add.dataset.add, add.dataset.id); return; }
+    if (e.target.closest("[data-pack-open]")) { e.preventDefault(); openPack(); return; }
+    if (e.target.closest("#packToggle")) { packEl.hidden ? openPack() : closePack(); return; }
+    if (e.target.closest("[data-pack-close]")) closePack();
+  });
+
+  $("#packItems").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-act]");
+    if (!b) return;
+    const it = pack.items[+b.dataset.i];
+    if (!it) return;
+    if (b.dataset.act === "remove") {
+      pack.items.splice(+b.dataset.i, 1);
+    } else if (b.dataset.act === "days") {
+      const cap = spanDays() || MAX_DAYS;
+      it.days = Math.min(Math.max(daysOf(it) + +b.dataset.d, 1), cap);
+    } else if (b.dataset.act === "qty") {
+      const L = lineOf(it);
+      it.qty = Math.min(Math.max(it.qty + +b.dataset.d, 1), L.c.max(L.x));
+    }
+    savePack();
+    renderPack();
+    const again = $(`[data-act="${b.dataset.act}"][data-i="${b.dataset.i}"][data-d="${b.dataset.d}"]`, $("#packItems"));
+    if (again && !again.disabled) again.focus();
+    else drawer.focus();
+  });
+
+  function onDates() {
+    pack.from = packFrom.value;
+    pack.to = packTo.value;
+    savePack();
+    $("#packError").hidden = true;
+    renderPack();
+  }
+  packFrom.addEventListener("change", onDates);
+  packTo.addEventListener("change", onDates);
+
+  $("#packClear").addEventListener("click", () => {
+    pack.items = [];
+    savePack();
+    renderPack();
+    showToast(ui().pack.cleared);
+  });
+
+  $("#packSubmit").addEventListener("click", () => {
+    const P = ui().pack, err = $("#packError"), span = spanDays();
+    const problems = [];
+    if (!span) problems.push(span === 0 ? P.badRange : P.needDates);
+    if (!pack.items.length) problems.push(P.needItems);
+    if (problems.length) { err.textContent = problems.join(" "); err.hidden = false; return; }
+    err.hidden = true;
+    let grand = 0, onRequest = 0;
+    const rows = pack.items.map((it) => {
+      const L = lineOf(it);
+      if (L.total == null) onRequest++; else grand += L.total;
+      const parts = [L.c.unit === "nights" ? P.unitNights(L.days) : P.unitDays(L.days)];
+      if (L.c.qty && (L.qty > 1 || it.kind === "hotel")) parts.push(P.unitQty(L.qty, it.kind));
+      parts.push(L.total == null ? ui().priceOnRequest : sar(L.total));
+      return [tr(L.x, "name"), parts.join(" · ")];
+    });
+    const [title, text] = P.sent;
+    closePack();
+    showModal(title, text, [
+      [P.period, `${pack.from} → ${pack.to} (${P.unitDays(span)})`],
+      ...rows,
+      [P.total, sar(grand) + (onRequest ? " +" : "")],
+      [ui().rows.ref, ref()],
+    ]);
+    pack.items = [];
+    savePack();
+    updatePackBadges();
+  });
+
   /* ---------- Language switch ---------- */
   function render() {
     applyStatic();
@@ -455,6 +712,7 @@
     renderHosp();
     renderPost();
     updateBudget();
+    renderPack();
     if (plannerTried) validatePlanner();
     if (contactTried) validateContact();
   }

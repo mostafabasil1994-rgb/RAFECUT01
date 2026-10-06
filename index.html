@@ -32,6 +32,9 @@
       </nav>
 
       <div class="header-actions">
+        <button class="pack-toggle" id="packToggle" type="button" aria-controls="packDrawer" aria-expanded="false" data-i18n-aria="aria.pack" aria-label="باكيتك">
+          <span data-icon="bag"></span><span class="pack-count" id="packCount" hidden>0</span>
+        </button>
         <button class="lang-toggle" id="langToggle" type="button" lang="en" aria-label="Switch to English">EN</button>
         <button class="menu-toggle" id="menuToggle" data-i18n-aria="aria.menu" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mainNav">
           <span></span><span></span><span></span>
@@ -83,6 +86,24 @@
           <h2 class="section-title" data-i18n="services.title">أربع خدمات، رحلة إنتاج كاملة</h2>
         </div>
         <div class="services-grid" id="servicesGrid"></div>
+      </div>
+    </section>
+
+    <!-- Build your package -->
+    <section class="section pack-band" id="package">
+      <div class="container pack-band-inner">
+        <div class="reveal">
+          <p class="eyebrow" data-i18n="pack.eyebrow">اصنع حزمتك</p>
+          <h2 class="section-title" data-i18n="pack.title">ابنِ إنتاجك قطعةً قطعة،<br>والسعر يُحسب أمامك</h2>
+          <p class="muted" data-i18n="pack.text">اختر مواقع التصوير والمعدات والفندق، وحدّد فترة التصوير وعدد الأيام لكل عنصر. ستجد كل ما اخترته في «باكيتك» مع السعر الكلي.</p>
+        </div>
+        <ol class="pack-steps reveal">
+          <li><span class="pack-step-icon" data-icon="location"></span><strong data-i18n="pack.s1t">اختر الموقع</strong><span data-i18n="pack.s1">100$ لليوم لكل موقع</span></li>
+          <li><span class="pack-step-icon" data-icon="camera"></span><strong data-i18n="pack.s2t">أضف المعدات</strong><span data-i18n="pack.s2">حدّد العدد وعدد الأيام</span></li>
+          <li><span class="pack-step-icon" data-icon="hotel"></span><strong data-i18n="pack.s3t">احجز الإقامة</strong><span data-i18n="pack.s3">الغرف والليالي لفريقك</span></li>
+          <li><span class="pack-step-icon" data-icon="bag"></span><strong data-i18n="pack.s4t">اطلب باكيتك</strong><span data-i18n="pack.s4">حدّد التواريخ وأرسل الطلب</span></li>
+        </ol>
+        <div class="reveal"><button type="button" class="btn btn-gold" data-pack-open data-i18n="pack.open">افتح باكيتك</button></div>
       </div>
     </section>
 
@@ -360,6 +381,50 @@
       <p>© <span id="year"></span> RAFECUT. <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span></p>
     </div>
   </footer>
+
+  <!-- ============ Pack drawer (اصنع حزمتك) ============ -->
+  <div class="pack" id="pack" hidden>
+    <div class="pack-backdrop" data-pack-close></div>
+    <aside class="pack-drawer" id="packDrawer" role="dialog" aria-modal="true" aria-labelledby="packTitle" tabindex="-1">
+      <header class="pack-head">
+        <div>
+          <p class="eyebrow" data-i18n="pack.eyebrow">اصنع حزمتك</p>
+          <h2 id="packTitle" data-i18n="pack.name">باكيتك</h2>
+        </div>
+        <button type="button" class="modal-x" data-pack-close data-i18n-aria="aria.close" aria-label="إغلاق">×</button>
+      </header>
+      <div class="pack-body">
+        <fieldset class="pack-dates">
+          <legend data-i18n="pack.dates">فترة التصوير</legend>
+          <div class="field-row two">
+            <div class="field">
+              <label for="packFrom" data-i18n="pack.from">من</label>
+              <input type="date" id="packFrom">
+            </div>
+            <div class="field">
+              <label for="packTo" data-i18n="pack.to">إلى</label>
+              <input type="date" id="packTo">
+            </div>
+          </div>
+          <p class="pack-span" id="packSpan"></p>
+        </fieldset>
+        <div id="packItems"></div>
+      </div>
+      <footer class="pack-foot">
+        <div id="packTotals"></div>
+        <p class="form-error" id="packError" role="alert" hidden></p>
+        <div class="pack-actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="packClear" data-i18n="pack.clear">إفراغ الباكيت</button>
+          <button type="button" class="btn btn-gold" id="packSubmit" data-i18n="pack.submit">اطلب الحزمة</button>
+        </div>
+      </footer>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span id="toastText"></span>
+    <button type="button" class="toast-btn" data-pack-open data-i18n="pack.view">عرض الباكيت</button>
+  </div>
 
   <!-- ============ Modal ============ -->
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
