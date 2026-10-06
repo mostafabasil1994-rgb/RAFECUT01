@@ -1,12 +1,46 @@
-/* RAFECUT — front-end interactions */
+/* RAFECUT — front-end interactions (Arabic / English) */
 (() => {
   "use strict";
 
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
   const fmt = (n) => n.toLocaleString("en-US");
-  const sar = (n) => `${fmt(n)} ر.س`;
   const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  /* ---------- Language state ---------- */
+  const LANG_KEY = "rafecut-lang";
+  let lang = "ar";
+  try {
+    const q = new URLSearchParams(location.search).get("lang");
+    lang = q === "en" || q === "ar" ? q : localStorage.getItem(LANG_KEY) || "ar";
+  } catch (_) { /* storage blocked: keep Arabic */ }
+  if (lang !== "en") lang = "ar";
+
+  const ui = () => UI[lang];
+  const sar = (n) => ui().currency(fmt(n));
+  /* pick a field from an item in the current language */
+  const tr = (item, field) => (lang === "en" && item.en && item.en[field] != null ? item.en[field] : item[field]);
+
+  /* Arabic static text is read once from the HTML */
+  const AR = {}, AR_PH = {}, AR_ARIA = {};
+  $$("[data-i18n]").forEach((el) => { AR[el.dataset.i18n] ??= el.innerHTML; });
+  $$("[data-i18n-ph]").forEach((el) => { AR_PH[el.dataset.i18nPh] ??= el.placeholder; });
+  $$("[data-i18n-aria]").forEach((el) => { AR_ARIA[el.dataset.i18nAria] ??= el.getAttribute("aria-label"); });
+  const label = (key) => (lang === "en" ? STATIC_EN[key] : AR[key]) ?? key;
+  const plain = (key) => { const d = document.createElement("div"); d.innerHTML = label(key); return d.textContent; };
+
+  function applyStatic() {
+    $$("[data-i18n]").forEach((el) => { el.innerHTML = label(el.dataset.i18n); });
+    $$("[data-i18n-ph]").forEach((el) => { el.placeholder = lang === "en" ? STATIC_EN[el.dataset.i18nPh] : AR_PH[el.dataset.i18nPh]; });
+    $$("[data-i18n-aria]").forEach((el) => { el.setAttribute("aria-label", lang === "en" ? STATIC_EN[el.dataset.i18nAria] : AR_ARIA[el.dataset.i18nAria]); });
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "en" ? "ltr" : "rtl";
+    document.title = ui().pageTitle;
+    const btn = $("#langToggle");
+    btn.textContent = ui().langBtn;
+    btn.lang = ui().langBtnLang;
+    btn.setAttribute("aria-label", ui().langBtnLabel);
+  }
 
   /* ---------- Icons (inline SVG, stroke style) ---------- */
   const ICONS = {
@@ -37,11 +71,15 @@
   $$("[data-icon]").forEach((el) => (el.innerHTML = icon(el.dataset.icon)));
 
   /* Card media with graceful fallback when the placeholder image can't load */
-  const media = (src, alt, fallbackIcon, extra = "") => `
-    <div class="card-media ${extra}">
+  const media = (src, alt, fallbackIcon) => `
+    <div class="card-media">
       <span class="media-fallback">${icon(fallbackIcon)}</span>
-      ${src ? `<img src="${src}" alt="${alt}" loading="lazy" onerror="this.remove()">` : ""}
+      ${src ? `<img src="${src}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">` : ""}
     </div>`;
+
+  /* Booking buttons carry their modal content in data attributes */
+  const bookBtn = (cls, kind, name, extra, text) =>
+    `<button class="btn ${cls} btn-sm" data-book="${kind}" data-name="${esc(name)}" data-extra="${esc(extra)}">${text}</button>`;
 
   /* ---------- Header: scroll state, mobile menu, active link ---------- */
   const header = $("#siteHeader");
@@ -61,17 +99,14 @@
   $$("a", nav).forEach((a) => a.addEventListener("click", () => setMenu(false)));
 
   const navLinks = $$(".nav-link");
-  const sectionIds = ["home", "locations", "equipment", "hospitality", "post", "contact"];
   const spy = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        navLinks.forEach((l) => l.classList.toggle("active", l.getAttribute("href") === `#${e.target.id}`));
-      });
-    },
+    (entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      navLinks.forEach((l) => l.classList.toggle("active", l.getAttribute("href") === `#${e.target.id}`));
+    }),
     { rootMargin: "-45% 0px -50% 0px" }
   );
-  sectionIds.forEach((id) => spy.observe(document.getElementById(id)));
+  ["home", "locations", "equipment", "hospitality", "post", "contact"].forEach((id) => spy.observe(document.getElementById(id)));
 
   /* ---------- Reveal on scroll ---------- */
   const revealer = new IntersectionObserver(
@@ -120,25 +155,36 @@
     if (lastFocus) lastFocus.focus();
   }
   modal.addEventListener("click", (e) => { if (e.target.closest("[data-close]")) closeModal(); });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !modal.hidden) closeModal();
-  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) closeModal(); });
 
   const ref = () => "RC-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+  const city = (key) => ui().cities[key] || key;
+  const levelTag = (lvl) => label(`level.${lvl}`);
+
+  /* ---------- City selects ---------- */
+  function fillCitySelect(select, keepFirst) {
+    const val = select.value;
+    const first = select.options[0];
+    select.innerHTML = "";
+    if (keepFirst) select.add(first);
+    CITIES.forEach((c) => select.add(new Option(city(c), c)));
+    select.value = val;
+  }
 
   /* ---------- Services ---------- */
-  $("#servicesGrid").innerHTML = SERVICES.map((s, i) => `
-    <a class="service-card reveal" href="${s.href}" style="--d:${i * 80}ms">
-      <span class="service-num">0${i + 1}</span>
-      <span class="service-icon">${icon(s.icon)}</span>
-      <h3>${s.title}</h3>
-      <p>${s.text}</p>
-      <span class="service-more">اكتشف المزيد ←</span>
-    </a>`).join("");
+  function renderServices() {
+    $("#servicesGrid").innerHTML = SERVICES.map((s, i) => `
+      <a class="service-card reveal in" href="${s.href}" style="--d:${i * 80}ms">
+        <span class="service-num">0${i + 1}</span>
+        <span class="service-icon">${icon(s.icon)}</span>
+        <h3>${tr(s, "title")}</h3>
+        <p>${tr(s, "text")}</p>
+        <span class="service-more">${ui().more}</span>
+      </a>`).join("");
+  }
 
   /* ---------- Locations ---------- */
   const fCity = $("#fCity"), fType = $("#fType"), fPrice = $("#fPrice");
-  [...new Set(LOCATIONS.map((l) => l.city))].forEach((c) => fCity.add(new Option(c, c)));
 
   function renderLocations() {
     const [min, max] = fPrice.value === "all" ? [0, Infinity] : fPrice.value.split("-").map(Number);
@@ -146,19 +192,23 @@
       (fCity.value === "all" || l.city === fCity.value) &&
       (fType.value === "all" || l.type === fType.value) &&
       l.price >= min && l.price < max);
-    $("#locationsGrid").innerHTML = list.map((l) => `
+    const per = ui().perDay;
+    $("#locationsGrid").innerHTML = list.map((l) => {
+      const name = tr(l, "name");
+      return `
       <article class="card item-card reveal">
-        ${media(l.img, l.name, "location")}
-        <span class="tag">${LOCATION_TYPES[l.type]}</span>
+        ${media(l.img, name, "location")}
+        <span class="tag">${label(`ltype.${l.type}`)}</span>
         <div class="card-body">
-          <h3>${l.name}</h3>
-          <p class="meta">${icon("pin")} ${l.city}</p>
+          <h3>${name}</h3>
+          <p class="meta">${icon("pin")} ${city(l.city)}</p>
           <div class="card-foot">
-            <p class="price">${sar(l.price)} <small>/ يوم</small></p>
-            <button class="btn btn-gold btn-sm" data-book="location" data-name="${l.name}" data-extra="${l.city} · ${sar(l.price)} / يوم">احجز</button>
+            <p class="price">${sar(l.price)} <small>/ ${per}</small></p>
+            ${bookBtn("btn-gold", "location", name, `${city(l.city)} · ${sar(l.price)} / ${per}`, ui().book)}
           </div>
         </div>
-      </article>`).join("");
+      </article>`;
+    }).join("");
     $("#locationsEmpty").hidden = list.length > 0;
     observeReveals($("#locationsGrid"));
   }
@@ -167,25 +217,28 @@
     fCity.value = fType.value = fPrice.value = "all";
     renderLocations();
   });
-  renderLocations();
 
   /* ---------- Equipment & crew ---------- */
   let gearCat = "all";
   function renderGear() {
     const list = GEAR.filter((g) => gearCat === "all" || g.cat === gearCat);
-    $("#gearGrid").innerHTML = list.map((g) => `
+    const per = ui().perDay;
+    $("#gearGrid").innerHTML = list.map((g) => {
+      const name = tr(g, "name");
+      return `
       <article class="card item-card reveal">
-        ${media(g.img, g.name, g.cat === "camera" ? "camera" : g.cat, "short")}
-        <span class="tag">${GEAR_CATS[g.cat]}</span>
+        ${media(g.img, name, g.cat)}
+        <span class="tag">${ui().gearCats[g.cat]}</span>
         <div class="card-body">
-          <h3 dir="auto">${g.name}</h3>
-          <p class="meta">${g.desc}</p>
+          <h3 dir="auto">${name}</h3>
+          <p class="meta">${tr(g, "desc")}</p>
           <div class="card-foot">
-            <p class="price">${sar(g.price)} <small>/ يوم</small></p>
-            <button class="btn btn-gold btn-sm" data-book="gear" data-name="${g.name}" data-extra="${sar(g.price)} / يوم">استأجر</button>
+            <p class="price">${sar(g.price)} <small>/ ${per}</small></p>
+            ${bookBtn("btn-gold", "gear", name, `${sar(g.price)} / ${per}`, ui().rent)}
           </div>
         </div>
-      </article>`).join("");
+      </article>`;
+    }).join("");
     observeReveals($("#gearGrid"));
   }
   $("#gearFilter").addEventListener("click", (e) => {
@@ -195,41 +248,47 @@
     gearCat = b.dataset.cat;
     renderGear();
   });
-  renderGear();
 
-  const initials = (name) => name.split(" ").map((w) => w[0]).slice(0, 2).join(" ");
-  $("#crewGrid").innerHTML = CREW.map((c) => `
-    <article class="card crew-card reveal">
-      <div class="avatar" aria-hidden="true"><span>${initials(c.name)}</span></div>
-      <h3>${c.name}</h3>
-      <p class="role">${c.role}</p>
-      <ul class="crew-meta">
-        <li><strong>${c.years}</strong> سنة خبرة</li>
-        <li>${icon("pin")} ${c.city}</li>
-      </ul>
-      <button class="btn btn-ghost btn-sm btn-block" data-book="crew" data-name="${c.name}" data-extra="${c.role}">تواصل</button>
-    </article>`).join("");
+  const initials = (name) => name.split(/[\s-]+/).filter((w) => w && w !== "Al").map((w) => w[0]).slice(0, 2).join(lang === "en" ? "" : " ");
+  function renderCrew() {
+    $("#crewGrid").innerHTML = CREW.map((c) => {
+      const name = tr(c, "name"), role = tr(c, "role");
+      return `
+      <article class="card crew-card reveal">
+        <div class="avatar" aria-hidden="true"><span>${initials(name)}</span></div>
+        <h3>${name}</h3>
+        <p class="role">${role}</p>
+        <ul class="crew-meta">
+          <li><strong>${c.years}</strong> ${ui().years}</li>
+          <li>${icon("pin")} ${city(c.city)}</li>
+        </ul>
+        ${bookBtn("btn-ghost btn-block", "crew", name, role, ui().contact)}
+      </article>`;
+    }).join("");
+    observeReveals($("#crewGrid"));
+  }
 
   /* ---------- Hotels & restaurants ---------- */
   const fBudget = $("#fBudget");
   let hospTab = "hotels";
-  const dollars = (lvl) =>
-    `<span class="level" title="${LEVELS[lvl]}" aria-label="مستوى السعر: ${LEVELS[lvl]}">${"<b></b>".repeat(lvl)}${"<i></i>".repeat(3 - lvl)}</span>`;
+  const dots = (lvl) =>
+    `<span class="level" aria-label="${ui().priceLevel}: ${levelTag(lvl)}">${"<b></b>".repeat(lvl)}${"<i></i>".repeat(3 - lvl)}</span>`;
 
   function hospCard(h, kind) {
+    const name = tr(h, "name"), cuisine = tr(h, "cuisine"), unit = ui().per[h.unit];
     return `
       <article class="card item-card reveal">
-        ${media(h.img, h.name, kind === "hotels" ? "hotel" : "star")}
-        <span class="tag">${LEVELS[h.level]}</span>
+        ${media(h.img, name, kind === "hotels" ? "hotel" : "star")}
+        <span class="tag">${levelTag(h.level)}</span>
         <div class="card-body">
-          <h3>${h.name}</h3>
-          <p class="meta">${icon("pin")} ${h.city}${h.cuisine ? ` · ${h.cuisine}` : ""}</p>
+          <h3>${name}</h3>
+          <p class="meta">${icon("pin")} ${city(h.city)}${cuisine ? ` · ${cuisine}` : ""}</p>
           <div class="card-foot">
             <div>
-              ${dollars(h.level)}
-              <p class="price">${sar(h.price)} <small>/ ${h.unit}</small></p>
+              ${dots(h.level)}
+              <p class="price">${sar(h.price)} <small>/ ${unit}</small></p>
             </div>
-            <button class="btn btn-gold btn-sm" data-book="${kind}" data-name="${h.name}" data-extra="${h.city} · ${sar(h.price)} / ${h.unit}">احجز</button>
+            ${bookBtn("btn-gold", kind, name, `${city(h.city)} · ${sar(h.price)} / ${unit}`, ui().book)}
           </div>
         </div>
       </article>`;
@@ -243,7 +302,6 @@
     observeReveals($("#hospitality"));
   }
   fBudget.addEventListener("change", renderHosp);
-  renderHosp();
 
   /* ---------- Tabs ---------- */
   $$("[data-tabs]").forEach((group) => {
@@ -262,41 +320,40 @@
   });
 
   /* ---------- Post-production ---------- */
-  $("#postServices").innerHTML = POST_SERVICES.map((s, i) => `
-    <div class="post-card reveal" style="--d:${i * 80}ms">
-      <span class="service-icon">${icon(s.icon)}</span>
-      <h3>${s.title}</h3>
-      <p>${s.text}</p>
-    </div>`).join("");
+  function renderPost() {
+    $("#postServices").innerHTML = POST_SERVICES.map((s, i) => `
+      <div class="post-card reveal in" style="--d:${i * 80}ms">
+        <span class="service-icon">${icon(s.icon)}</span>
+        <h3>${tr(s, "title")}</h3>
+        <p>${tr(s, "text")}</p>
+      </div>`).join("");
 
-  $("#pricing").innerHTML = PACKAGES.map((p) => `
-    <div class="price-card reveal ${p.featured ? "featured" : ""}">
-      ${p.featured ? '<span class="badge">الأكثر طلبًا</span>' : ""}
-      <h3>${p.name}</h3>
-      <p class="muted small">${p.note}</p>
-      <p class="price-big"><small>${p.unit}</small> ${fmt(p.price)} <span>ر.س</span></p>
-      <ul>${p.features.map((f) => `<li>${f}</li>`).join("")}</ul>
-      <button class="btn ${p.featured ? "btn-gold" : "btn-ghost"} btn-block" data-book="package" data-name="باقة ${p.name}" data-extra="${sar(p.price)}">اختر الباقة</button>
-    </div>`).join("");
+    $("#pricing").innerHTML = PACKAGES.map((p) => {
+      const name = tr(p, "name");
+      return `
+      <div class="price-card reveal in ${p.featured ? "featured" : ""}">
+        ${p.featured ? `<span class="badge">${ui().popular}</span>` : ""}
+        <h3>${name}</h3>
+        <p class="muted small">${tr(p, "note")}</p>
+        <p class="price-big"><small>${ui().per[p.unit]}</small> ${fmt(p.price)} <span>${lang === "en" ? "SAR" : "ر.س"}</span></p>
+        <ul>${tr(p, "features").map((f) => `<li>${f}</li>`).join("")}</ul>
+        <button class="btn ${p.featured ? "btn-gold" : "btn-ghost"} btn-block" data-book="package" data-name="${esc(`${ui().pkg} ${name}`)}" data-extra="${esc(sar(p.price))}">${ui().choose}</button>
+      </div>`;
+    }).join("");
+  }
 
   /* ---------- Booking buttons (delegated) ---------- */
-  const BOOK_COPY = {
-    location: ["تم استلام طلب الحجز", "سيتواصل معك فريقنا لتأكيد التوفر والتصاريح خلال 24 ساعة."],
-    gear: ["تمت إضافة طلب الاستئجار", "سنؤكد توفر المعدة ونرسل لك تفاصيل الاستلام والتأمين."],
-    crew: ["تم إرسال طلب التواصل", "سنشارك تفاصيل مشروعك مع المحترف ونرتّب لكما موعدًا."],
-    hotels: ["تم استلام طلب الحجز", "سنؤكد الغرف المتاحة وأسعار المجموعات لفريقك."],
-    restaurants: ["تم استلام طلب الحجز", "سنرسل لك قائمة الطعام وخيارات التموين المناسبة لعدد فريقك."],
-    package: ["تم استلام طلب الخدمة", "سيتواصل معك مشرف ما بعد الإنتاج لمناقشة تفاصيل مشروعك."],
-  };
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-book]");
+    const r = ui().rows;
     if (b) {
-      const [title, text] = BOOK_COPY[b.dataset.book];
-      showModal(title, text, [["الطلب", b.dataset.name], ["التفاصيل", b.dataset.extra], ["رقم المرجع", ref()]]);
+      const [title, text] = ui().booking[b.dataset.book];
+      showModal(title, text, [[r.request, b.dataset.name], [r.details, b.dataset.extra], [r.ref, ref()]]);
       return;
     }
     if (e.target.closest('[data-action="request-post"]')) {
-      showModal("تم استلام طلب الخدمة", "سيتواصل معك مشرف ما بعد الإنتاج لتحديد الباقة الأنسب لمشروعك.", [["رقم المرجع", ref()]]);
+      const [title, text] = ui().booking.post;
+      showModal(title, text, [[r.ref, ref()]]);
     }
   });
 
@@ -305,62 +362,88 @@
   const budget = $("#budget"), budgetOut = $("#budgetOut");
   const updateBudget = () => {
     const v = +budget.value;
-    budgetOut.textContent = v >= +budget.max ? "أكثر من مليون ر.س" : sar(v);
+    budgetOut.textContent = v >= +budget.max ? ui().budgetMax : sar(v);
     budget.style.setProperty("--p", ((v - budget.min) / (budget.max - budget.min)) * 100 + "%");
   };
   budget.addEventListener("input", updateBudget);
-  updateBudget();
+  $("#pDate").min = new Date().toISOString().slice(0, 10);
 
-  const pDate = $("#pDate");
-  pDate.min = new Date().toISOString().slice(0, 10);
-
+  let plannerTried = false;
+  function validatePlanner() {
+    const data = new FormData(planner);
+    const m = ui().missing, missing = [];
+    if (!data.get("type")) missing.push(m.type);
+    if (!data.getAll("services").length) missing.push(m.services);
+    if (!data.get("date")) missing.push(m.date);
+    if (!data.get("city")) missing.push(m.city);
+    if (!(+data.get("crew") > 0)) missing.push(m.crew);
+    const err = $("#plannerError");
+    err.textContent = ui().missingPrefix + missing.join(ui().listSep);
+    err.hidden = !missing.length;
+    return { data, ok: !missing.length };
+  }
   planner.addEventListener("submit", (e) => {
     e.preventDefault();
-    const err = $("#plannerError");
-    const data = new FormData(planner);
-    const services = data.getAll("services");
-    const missing = [];
-    if (!data.get("type")) missing.push("نوع المشروع");
-    if (!services.length) missing.push("خدمة واحدة على الأقل");
-    if (!data.get("date")) missing.push("التاريخ");
-    if (!data.get("city")) missing.push("المدينة");
-    if (!(+data.get("crew") > 0)) missing.push("حجم الطاقم");
-    if (missing.length) {
-      err.textContent = "يرجى تحديد: " + missing.join("، ");
-      err.hidden = false;
-      return;
-    }
-    err.hidden = true;
-    showModal("تم استلام طلب عرض السعر", "سيتواصل معك منسّق الإنتاج خلال 24 ساعة بعرض سعر مفصّل.", [
-      ["نوع المشروع", data.get("type")],
-      ["الميزانية", budgetOut.textContent],
-      ["الخدمات", services.join("، ")],
-      ["التاريخ والمدينة", `${data.get("date")} · ${data.get("city")}`],
-      ["حجم الطاقم", `${data.get("crew")} فرد`],
-      ["رقم المرجع", ref()],
+    plannerTried = true;
+    const { data, ok } = validatePlanner();
+    if (!ok) return;
+    const r = ui().rows;
+    const [title, text] = ui().quote;
+    showModal(title, text, [
+      [r.type, plain(`ptype.${data.get("type")}`)],
+      [r.budget, budgetOut.textContent],
+      [r.services, data.getAll("services").map((s) => plain(`svc.${s}`)).join(ui().listSep)],
+      [r.dateCity, `${data.get("date")} · ${city(data.get("city"))}`],
+      [r.crew, `${data.get("crew")} ${ui().crewUnit}`],
+      [r.ref, ref()],
     ]);
     planner.reset();
+    plannerTried = false;
     updateBudget();
   });
 
   /* ---------- Contact form ---------- */
   const contact = $("#contactForm");
+  let contactTried = false;
+  function validateContact() {
+    const err = $("#contactError");
+    const bad = $$(":invalid", contact).map((el) => $(`label[for="${el.id}"]`).textContent);
+    err.textContent = ui().contactInvalid + bad.join(ui().listSep);
+    err.hidden = !bad.length;
+    return !bad.length;
+  }
   contact.addEventListener("submit", (e) => {
     e.preventDefault();
-    const err = $("#contactError");
-    if (!contact.checkValidity()) {
-      const bad = $$(":invalid", contact).map((el) => $(`label[for="${el.id}"]`).textContent);
-      err.textContent = "يرجى تعبئة الحقول التالية بشكل صحيح: " + bad.join("، ");
-      err.hidden = false;
-      return;
-    }
-    err.hidden = true;
-    const name = $("#cName").value.trim();
-    showModal(`شكرًا لك، ${name}`, "وصلتنا رسالتك وسنرد عليك عبر البريد الإلكتروني خلال يوم عمل واحد.", [["رقم المرجع", ref()]]);
+    contactTried = true;
+    if (!validateContact()) return;
+    showModal(ui().thanks($("#cName").value.trim()), ui().thanksText, [[ui().rows.ref, ref()]]);
     contact.reset();
+    contactTried = false;
   });
 
-  /* ---------- Misc ---------- */
+  /* ---------- Language switch ---------- */
+  function render() {
+    applyStatic();
+    fillCitySelect(fCity, true);
+    fillCitySelect($("#pCity"), true);
+    renderServices();
+    renderLocations();
+    renderGear();
+    renderCrew();
+    renderHosp();
+    renderPost();
+    updateBudget();
+    if (plannerTried) validatePlanner();
+    if (contactTried) validateContact();
+  }
+  $("#langToggle").addEventListener("click", () => {
+    lang = lang === "en" ? "ar" : "en";
+    try { localStorage.setItem(LANG_KEY, lang); } catch (_) { /* ignore */ }
+    render();
+  });
+
+  /* ---------- Init ---------- */
   $("#year").textContent = new Date().getFullYear();
+  render();
   observeReveals();
 })();

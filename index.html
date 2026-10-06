@@ -16,24 +16,27 @@
   <!-- ============ Header ============ -->
   <header class="site-header" id="siteHeader">
     <div class="container header-inner">
-      <a href="#home" class="logo" aria-label="RAFECUT - الرئيسية">
+      <a href="#home" class="logo" aria-label="RAFECUT">
         <img src="assets/logo-mark.svg" alt="" class="logo-mark" width="38" height="38">
         <span class="logo-text">RAFECUT</span>
       </a>
 
-      <nav class="main-nav" id="mainNav" aria-label="القائمة الرئيسية">
-        <a href="#home" class="nav-link">الرئيسية</a>
-        <a href="#locations" class="nav-link">مواقع التصوير</a>
-        <a href="#equipment" class="nav-link">المعدات والطاقم</a>
-        <a href="#hospitality" class="nav-link">الفنادق والمطاعم</a>
-        <a href="#post" class="nav-link">المونتاج والتلوين</a>
-        <a href="#contact" class="nav-link">تواصل معنا</a>
-        <a href="#planner" class="btn btn-gold btn-sm nav-cta">ابدأ مشروعك</a>
+      <nav class="main-nav" id="mainNav" data-i18n-aria="aria.nav" aria-label="القائمة الرئيسية">
+        <a href="#home" class="nav-link" data-i18n="nav.home">الرئيسية</a>
+        <a href="#locations" class="nav-link" data-i18n="nav.locations">مواقع التصوير</a>
+        <a href="#equipment" class="nav-link" data-i18n="nav.equipment">المعدات والطاقم</a>
+        <a href="#hospitality" class="nav-link" data-i18n="nav.hospitality">الفنادق والمطاعم</a>
+        <a href="#post" class="nav-link" data-i18n="nav.post">المونتاج والتلوين</a>
+        <a href="#contact" class="nav-link" data-i18n="nav.contact">تواصل معنا</a>
+        <a href="#planner" class="btn btn-gold btn-sm nav-cta" data-i18n="cta.start">ابدأ مشروعك</a>
       </nav>
 
-      <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mainNav">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="header-actions">
+        <button class="lang-toggle" id="langToggle" type="button" lang="en" aria-label="Switch to English">EN</button>
+        <button class="menu-toggle" id="menuToggle" data-i18n-aria="aria.menu" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mainNav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -43,30 +46,30 @@
       <div class="hero-bg" aria-hidden="true"></div>
       <div class="hero-grain" aria-hidden="true"></div>
       <div class="container hero-content">
-        <p class="eyebrow reveal">منصة خدمات الإنتاج المتكاملة</p>
-        <h1 class="hero-title reveal">كل ما يحتاجه إنتاجك،<br><span class="gold">في مكان واحد</span></h1>
-        <p class="hero-sub reveal">من موقع التصوير إلى اللقطة الأخيرة في غرفة التلوين — نجمع لصنّاع الأفلام والإعلانات كل الخدمات في منصة واحدة.</p>
+        <p class="eyebrow reveal" data-i18n="hero.eyebrow">منصة خدمات الإنتاج المتكاملة</p>
+        <h1 class="hero-title reveal" data-i18n="hero.title">كل ما يحتاجه إنتاجك،<br><span class="gold">في مكان واحد</span></h1>
+        <p class="hero-sub reveal" data-i18n="hero.sub">من موقع التصوير إلى اللقطة الأخيرة في غرفة التلوين — نجمع لصنّاع الأفلام والإعلانات كل الخدمات في منصة واحدة.</p>
         <div class="hero-actions reveal">
-          <a href="#planner" class="btn btn-gold">ابدأ مشروعك</a>
-          <a href="#services" class="btn btn-ghost">استكشف الخدمات</a>
+          <a href="#planner" class="btn btn-gold" data-i18n="cta.start">ابدأ مشروعك</a>
+          <a href="#services" class="btn btn-ghost" data-i18n="hero.explore">استكشف الخدمات</a>
         </div>
       </div>
-      <a href="#about" class="scroll-hint" aria-label="انتقل للأسفل"><span></span></a>
+      <a href="#about" class="scroll-hint" data-i18n-aria="aria.scroll" aria-label="انتقل للأسفل"><span></span></a>
     </section>
 
     <!-- Intro -->
     <section class="section about" id="about">
       <div class="container about-grid">
         <div class="reveal">
-          <p class="eyebrow"><span class="num">01</span> عن RAFECUT</p>
-          <h2 class="section-title">منصة واحدة.<br>إنتاج بلا تعقيد.</h2>
+          <p class="eyebrow" data-i18n="about.eyebrow"><span class="num">01</span> عن RAFECUT</p>
+          <h2 class="section-title" data-i18n="about.title">منصة واحدة.<br>إنتاج بلا تعقيد.</h2>
         </div>
         <div class="reveal">
-          <p class="lead">RAFECUT هي منصة تجمع كل ما يحتاجه صانع المحتوى المرئي في رحلة واحدة: تختار موقع التصوير، تستأجر المعدات، تتواصل مع الطاقم، تحجز إقامة فريقك ووجباته، ثم تسلّم موادك لفريق ما بعد الإنتاج — دون التنقل بين عشرات الموردين.</p>
+          <p class="lead" data-i18n="about.lead">RAFECUT هي منصة تجمع كل ما يحتاجه صانع المحتوى المرئي في رحلة واحدة: تختار موقع التصوير، تستأجر المعدات، تتواصل مع الطاقم، تحجز إقامة فريقك ووجباته، ثم تسلّم موادك لفريق ما بعد الإنتاج — دون التنقل بين عشرات الموردين.</p>
           <div class="stats">
-            <div class="stat"><strong data-count="120">+120</strong><span>موقع تصوير</span></div>
-            <div class="stat"><strong data-count="850">+850</strong><span>قطعة معدات</span></div>
-            <div class="stat"><strong data-count="300">+300</strong><span>محترف في الطاقم</span></div>
+            <div class="stat"><strong data-count="120">+120</strong><span data-i18n="about.stat1">موقع تصوير</span></div>
+            <div class="stat"><strong data-count="850">+850</strong><span data-i18n="about.stat2">قطعة معدات</span></div>
+            <div class="stat"><strong data-count="300">+300</strong><span data-i18n="about.stat3">محترف في الطاقم</span></div>
           </div>
         </div>
       </div>
@@ -76,8 +79,8 @@
     <section class="section services" id="services">
       <div class="container">
         <div class="section-head reveal">
-          <p class="eyebrow"><span class="num">02</span> خدماتنا</p>
-          <h2 class="section-title">أربع خدمات، رحلة إنتاج كاملة</h2>
+          <p class="eyebrow" data-i18n="services.eyebrow"><span class="num">02</span> خدماتنا</p>
+          <h2 class="section-title" data-i18n="services.title">أربع خدمات، رحلة إنتاج كاملة</h2>
         </div>
         <div class="services-grid" id="servicesGrid"></div>
       </div>
@@ -87,66 +90,64 @@
     <section class="section planner" id="planner">
       <div class="container planner-grid">
         <div class="planner-intro reveal">
-          <p class="eyebrow"><span class="num">03</span> خطّط لمشروعك</p>
-          <h2 class="section-title">أخبرنا عن مشروعك،<br>ونجهّز لك العرض</h2>
-          <p class="muted">حدّد تفاصيل إنتاجك وسيتواصل معك منسّق إنتاج خلال 24 ساعة بعرض سعر مفصّل يشمل كل الخدمات التي اخترتها.</p>
+          <p class="eyebrow" data-i18n="planner.eyebrow"><span class="num">03</span> خطّط لمشروعك</p>
+          <h2 class="section-title" data-i18n="planner.title">أخبرنا عن مشروعك،<br>ونجهّز لك العرض</h2>
+          <p class="muted" data-i18n="planner.text">حدّد تفاصيل إنتاجك وسيتواصل معك منسّق إنتاج خلال 24 ساعة بعرض سعر مفصّل يشمل كل الخدمات التي اخترتها.</p>
           <ul class="checklist">
-            <li>عرض سعر واحد لكل الخدمات</li>
-            <li>منسّق إنتاج مخصّص لمشروعك</li>
-            <li>دون أي التزام مسبق</li>
+            <li data-i18n="planner.check1">عرض سعر واحد لكل الخدمات</li>
+            <li data-i18n="planner.check2">منسّق إنتاج مخصّص لمشروعك</li>
+            <li data-i18n="planner.check3">دون أي التزام مسبق</li>
           </ul>
         </div>
 
         <form class="card form planner-form reveal" id="plannerForm" novalidate>
           <fieldset>
-            <legend>نوع المشروع</legend>
+            <legend data-i18n="planner.type">نوع المشروع</legend>
             <div class="chips" role="radiogroup">
-              <label class="chip"><input type="radio" name="type" value="فيلم" required><span>فيلم</span></label>
-              <label class="chip"><input type="radio" name="type" value="إعلان تجاري"><span>إعلان تجاري</span></label>
-              <label class="chip"><input type="radio" name="type" value="فيديو كليب"><span>فيديو كليب</span></label>
-              <label class="chip"><input type="radio" name="type" value="فيلم وثائقي"><span>فيلم وثائقي</span></label>
+              <label class="chip"><input type="radio" name="type" value="film" required><span data-i18n="ptype.film">فيلم</span></label>
+              <label class="chip"><input type="radio" name="type" value="commercial"><span data-i18n="ptype.commercial">إعلان تجاري</span></label>
+              <label class="chip"><input type="radio" name="type" value="music"><span data-i18n="ptype.music">فيديو كليب</span></label>
+              <label class="chip"><input type="radio" name="type" value="doc"><span data-i18n="ptype.doc">فيلم وثائقي</span></label>
             </div>
           </fieldset>
 
           <div class="field">
-            <label for="budget">الميزانية التقريبية: <output id="budgetOut" class="gold">50,000 ر.س</output></label>
+            <label for="budget"><span data-i18n="planner.budget">الميزانية التقريبية:</span> <output id="budgetOut" class="gold">50,000 ر.س</output></label>
             <input type="range" id="budget" name="budget" min="10000" max="1000000" step="10000" value="50000">
-            <div class="range-labels"><span>10 آلاف</span><span>مليون+</span></div>
+            <div class="range-labels"><span data-i18n="planner.min">10 آلاف</span><span data-i18n="planner.max">مليون+</span></div>
           </div>
 
           <fieldset>
-            <legend>الخدمات المطلوبة</legend>
+            <legend data-i18n="planner.services">الخدمات المطلوبة</legend>
             <div class="checks">
-              <label class="check"><input type="checkbox" name="services" value="موقع تصوير"><span>موقع التصوير</span></label>
-              <label class="check"><input type="checkbox" name="services" value="معدات"><span>المعدات</span></label>
-              <label class="check"><input type="checkbox" name="services" value="طاقم عمل"><span>طاقم العمل</span></label>
-              <label class="check"><input type="checkbox" name="services" value="فندق"><span>الفندق</span></label>
-              <label class="check"><input type="checkbox" name="services" value="الطعام"><span>الطعام</span></label>
-              <label class="check"><input type="checkbox" name="services" value="مونتاج وتلوين"><span>المونتاج والتلوين</span></label>
+              <label class="check"><input type="checkbox" name="services" value="location"><span data-i18n="svc.location">موقع التصوير</span></label>
+              <label class="check"><input type="checkbox" name="services" value="gear"><span data-i18n="svc.gear">المعدات</span></label>
+              <label class="check"><input type="checkbox" name="services" value="crew"><span data-i18n="svc.crew">طاقم العمل</span></label>
+              <label class="check"><input type="checkbox" name="services" value="hotel"><span data-i18n="svc.hotel">الفندق</span></label>
+              <label class="check"><input type="checkbox" name="services" value="food"><span data-i18n="svc.food">الطعام</span></label>
+              <label class="check"><input type="checkbox" name="services" value="post"><span data-i18n="svc.post">المونتاج والتلوين</span></label>
             </div>
           </fieldset>
 
           <div class="field-row">
             <div class="field">
-              <label for="pDate">تاريخ التصوير</label>
+              <label for="pDate" data-i18n="planner.date">تاريخ التصوير</label>
               <input type="date" id="pDate" name="date" required>
             </div>
             <div class="field">
-              <label for="pCity">المدينة</label>
+              <label for="pCity" data-i18n="planner.city">المدينة</label>
               <select id="pCity" name="city" required>
-                <option value="">اختر المدينة</option>
-                <option>الرياض</option><option>جدة</option><option>العلا</option>
-                <option>أبها</option><option>الدمام</option><option>تبوك</option>
+                <option value="" data-i18n="planner.cityPick">اختر المدينة</option>
               </select>
             </div>
             <div class="field">
-              <label for="pCrew">حجم الطاقم</label>
-              <input type="number" id="pCrew" name="crew" min="1" max="500" placeholder="مثال: 15" required>
+              <label for="pCrew" data-i18n="planner.crew">حجم الطاقم</label>
+              <input type="number" id="pCrew" name="crew" min="1" max="500" data-i18n-ph="planner.crewPh" placeholder="مثال: 15" required>
             </div>
           </div>
 
           <p class="form-error" id="plannerError" role="alert" hidden></p>
-          <button type="submit" class="btn btn-gold btn-block">اطلب عرض سعر</button>
+          <button type="submit" class="btn btn-gold btn-block" data-i18n="planner.submit">اطلب عرض سعر</button>
         </form>
       </div>
     </section>
@@ -155,40 +156,40 @@
     <section class="section" id="locations">
       <div class="container">
         <div class="section-head reveal">
-          <p class="eyebrow"><span class="num">04</span> مواقع التصوير</p>
-          <h2 class="section-title">مواقع تصنع المشهد</h2>
-          <p class="muted">من الاستوديوهات المجهّزة إلى المواقع التراثية والطبيعة البكر.</p>
+          <p class="eyebrow" data-i18n="loc.eyebrow"><span class="num">04</span> مواقع التصوير</p>
+          <h2 class="section-title" data-i18n="loc.title">مواقع تصنع المشهد</h2>
+          <p class="muted" data-i18n="loc.text">من الاستوديوهات المجهّزة إلى المواقع التراثية والطبيعة البكر.</p>
         </div>
 
         <div class="filters reveal" id="locationFilters">
           <div class="field">
-            <label for="fCity">المدينة</label>
-            <select id="fCity"><option value="all">كل المدن</option></select>
+            <label for="fCity" data-i18n="loc.city">المدينة</label>
+            <select id="fCity"><option value="all" data-i18n="loc.allCities">كل المدن</option></select>
           </div>
           <div class="field">
-            <label for="fType">نوع الموقع</label>
+            <label for="fType" data-i18n="loc.type">نوع الموقع</label>
             <select id="fType">
-              <option value="all">كل الأنواع</option>
-              <option value="indoor">داخلي</option>
-              <option value="outdoor">خارجي</option>
-              <option value="nature">طبيعة</option>
-              <option value="heritage">تراثي</option>
+              <option value="all" data-i18n="loc.allTypes">كل الأنواع</option>
+              <option value="indoor" data-i18n="ltype.indoor">داخلي</option>
+              <option value="outdoor" data-i18n="ltype.outdoor">خارجي</option>
+              <option value="nature" data-i18n="ltype.nature">طبيعة</option>
+              <option value="heritage" data-i18n="ltype.heritage">تراثي</option>
             </select>
           </div>
           <div class="field">
-            <label for="fPrice">نطاق السعر اليومي</label>
+            <label for="fPrice" data-i18n="loc.price">نطاق السعر اليومي</label>
             <select id="fPrice">
-              <option value="all">كل الأسعار</option>
-              <option value="0-3000">أقل من 3,000 ر.س</option>
-              <option value="3000-6000">3,000 – 6,000 ر.س</option>
-              <option value="6000-999999">أكثر من 6,000 ر.س</option>
+              <option value="all" data-i18n="loc.allPrices">كل الأسعار</option>
+              <option value="0-3000" data-i18n="loc.p1">أقل من 3,000 ر.س</option>
+              <option value="3000-6000" data-i18n="loc.p2">3,000 – 6,000 ر.س</option>
+              <option value="6000-999999" data-i18n="loc.p3">أكثر من 6,000 ر.س</option>
             </select>
           </div>
-          <button type="button" class="btn btn-ghost btn-sm" id="fReset">إعادة تعيين</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="fReset" data-i18n="loc.reset">إعادة تعيين</button>
         </div>
 
         <div class="grid cards-3" id="locationsGrid"></div>
-        <p class="empty" id="locationsEmpty" hidden>لا توجد مواقع مطابقة لاختيارك. جرّب تغيير الفلاتر.</p>
+        <p class="empty" id="locationsEmpty" data-i18n="loc.empty" hidden>لا توجد مواقع مطابقة لاختيارك. جرّب تغيير الفلاتر.</p>
       </div>
     </section>
 
@@ -196,22 +197,22 @@
     <section class="section alt" id="equipment">
       <div class="container">
         <div class="section-head reveal">
-          <p class="eyebrow"><span class="num">05</span> المعدات والطاقم</p>
-          <h2 class="section-title">أدوات المحترفين وأيديهم</h2>
+          <p class="eyebrow" data-i18n="eq.eyebrow"><span class="num">05</span> المعدات والطاقم</p>
+          <h2 class="section-title" data-i18n="eq.title">أدوات المحترفين وأيديهم</h2>
         </div>
 
         <div class="tabs reveal" role="tablist" data-tabs="equip">
-          <button class="tab active" role="tab" aria-selected="true" data-tab="gear">معدات التصوير</button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="crew">طاقم العمل</button>
+          <button class="tab active" role="tab" aria-selected="true" data-tab="gear" data-i18n="eq.tabGear">معدات التصوير</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="crew" data-i18n="eq.tabCrew">طاقم العمل</button>
         </div>
 
         <div class="tab-panel active" data-panel="gear">
           <div class="chips chips-filter" id="gearFilter">
-            <button class="chip-btn active" data-cat="all">الكل</button>
-            <button class="chip-btn" data-cat="camera">كاميرات</button>
-            <button class="chip-btn" data-cat="lighting">إضاءة</button>
-            <button class="chip-btn" data-cat="sound">صوت</button>
-            <button class="chip-btn" data-cat="drone">درون</button>
+            <button class="chip-btn active" data-cat="all" data-i18n="eq.all">الكل</button>
+            <button class="chip-btn" data-cat="camera" data-i18n="eq.cameras">كاميرات</button>
+            <button class="chip-btn" data-cat="lighting" data-i18n="eq.lighting">إضاءة</button>
+            <button class="chip-btn" data-cat="sound" data-i18n="eq.sound">صوت</button>
+            <button class="chip-btn" data-cat="drone" data-i18n="eq.drones">درون</button>
           </div>
           <div class="grid cards-4" id="gearGrid"></div>
         </div>
@@ -226,22 +227,22 @@
     <section class="section" id="hospitality">
       <div class="container">
         <div class="section-head reveal">
-          <p class="eyebrow"><span class="num">06</span> الفنادق والمطاعم</p>
-          <h2 class="section-title">راحة فريقك جزء من الإنتاج</h2>
+          <p class="eyebrow" data-i18n="hosp.eyebrow"><span class="num">06</span> الفنادق والمطاعم</p>
+          <h2 class="section-title" data-i18n="hosp.title">راحة فريقك جزء من الإنتاج</h2>
         </div>
 
         <div class="tabs-row reveal">
           <div class="tabs" role="tablist" data-tabs="hosp">
-            <button class="tab active" role="tab" aria-selected="true" data-tab="hotels">الفنادق</button>
-            <button class="tab" role="tab" aria-selected="false" data-tab="restaurants">المطاعم</button>
+            <button class="tab active" role="tab" aria-selected="true" data-tab="hotels" data-i18n="hosp.tabHotels">الفنادق</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="restaurants" data-i18n="hosp.tabRest">المطاعم</button>
           </div>
           <div class="field inline">
-            <label for="fBudget">الميزانية</label>
+            <label for="fBudget" data-i18n="hosp.budget">الميزانية</label>
             <select id="fBudget">
-              <option value="all">الكل</option>
-              <option value="1">اقتصادي</option>
-              <option value="2">متوسط</option>
-              <option value="3">فاخر</option>
+              <option value="all" data-i18n="hosp.all">الكل</option>
+              <option value="1" data-i18n="level.1">اقتصادي</option>
+              <option value="2" data-i18n="level.2">متوسط</option>
+              <option value="3" data-i18n="level.3">فاخر</option>
             </select>
           </div>
         </div>
@@ -252,7 +253,7 @@
         <div class="tab-panel" data-panel="restaurants">
           <div class="grid cards-3" id="restaurantsGrid"></div>
         </div>
-        <p class="empty" id="hospEmpty" hidden>لا توجد نتائج ضمن هذه الميزانية.</p>
+        <p class="empty" id="hospEmpty" data-i18n="hosp.empty" hidden>لا توجد نتائج ضمن هذه الميزانية.</p>
       </div>
     </section>
 
@@ -260,9 +261,9 @@
     <section class="section alt" id="post">
       <div class="container">
         <div class="section-head reveal">
-          <p class="eyebrow"><span class="num">07</span> المونتاج وتصحيح الألوان</p>
-          <h2 class="section-title">حيث تكتمل الحكاية</h2>
-          <p class="muted">فريق ما بعد الإنتاج لدينا يحوّل ساعات التصوير إلى عمل متماسك بصريًا وصوتيًا، بأحدث أنظمة المونتاج والتلوين.</p>
+          <p class="eyebrow" data-i18n="post.eyebrow"><span class="num">07</span> المونتاج وتصحيح الألوان</p>
+          <h2 class="section-title" data-i18n="post.title">حيث تكتمل الحكاية</h2>
+          <p class="muted" data-i18n="post.text">فريق ما بعد الإنتاج لدينا يحوّل ساعات التصوير إلى عمل متماسك بصريًا وصوتيًا، بأحدث أنظمة المونتاج والتلوين.</p>
         </div>
 
         <div class="grid cards-4 post-services" id="postServices"></div>
@@ -270,7 +271,7 @@
         <div class="pricing" id="pricing"></div>
 
         <div class="center reveal">
-          <button class="btn btn-gold" data-action="request-post">اطلب الخدمة</button>
+          <button class="btn btn-gold" data-action="request-post" data-i18n="post.request">اطلب الخدمة</button>
         </div>
       </div>
     </section>
@@ -279,56 +280,56 @@
     <section class="section" id="contact">
       <div class="container contact-grid">
         <div class="reveal">
-          <p class="eyebrow"><span class="num">08</span> تواصل معنا</p>
-          <h2 class="section-title">لنبدأ الحديث<br>عن مشروعك القادم</h2>
+          <p class="eyebrow" data-i18n="contact.eyebrow"><span class="num">08</span> تواصل معنا</p>
+          <h2 class="section-title" data-i18n="contact.title">لنبدأ الحديث<br>عن مشروعك القادم</h2>
           <ul class="contact-list">
             <li><span class="ci" data-icon="mail"></span><a href="mailto:hello@rafecut.com">hello@rafecut.com</a></li>
             <li><span class="ci" data-icon="phone"></span><a href="tel:+966500000000" dir="ltr">+966 50 000 0000</a></li>
-            <li><span class="ci" data-icon="pin"></span><span>طريق الملك فهد، الرياض، المملكة العربية السعودية</span></li>
+            <li><span class="ci" data-icon="pin"></span><span data-i18n="contact.address">طريق الملك فهد، الرياض، المملكة العربية السعودية</span></li>
           </ul>
-          <div class="socials" aria-label="حسابات التواصل الاجتماعي">
-            <a href="#" aria-label="إنستغرام" data-icon="instagram"></a>
-            <a href="#" aria-label="إكس" data-icon="x"></a>
-            <a href="#" aria-label="يوتيوب" data-icon="youtube"></a>
-            <a href="#" aria-label="لينكدإن" data-icon="linkedin"></a>
-            <a href="#" aria-label="فيميو" data-icon="vimeo"></a>
+          <div class="socials">
+            <a href="#" aria-label="Instagram" data-icon="instagram"></a>
+            <a href="#" aria-label="X" data-icon="x"></a>
+            <a href="#" aria-label="YouTube" data-icon="youtube"></a>
+            <a href="#" aria-label="LinkedIn" data-icon="linkedin"></a>
+            <a href="#" aria-label="Vimeo" data-icon="vimeo"></a>
           </div>
         </div>
 
         <form class="card form reveal" id="contactForm" novalidate>
           <div class="field-row two">
             <div class="field">
-              <label for="cName">الاسم</label>
+              <label for="cName" data-i18n="contact.name">الاسم</label>
               <input id="cName" name="name" type="text" autocomplete="name" required>
             </div>
             <div class="field">
-              <label for="cEmail">البريد الإلكتروني</label>
+              <label for="cEmail" data-i18n="contact.email">البريد الإلكتروني</label>
               <input id="cEmail" name="email" type="email" autocomplete="email" dir="ltr" required>
             </div>
           </div>
           <div class="field-row two">
             <div class="field">
-              <label for="cPhone">رقم الجوال</label>
+              <label for="cPhone" data-i18n="contact.phone">رقم الجوال</label>
               <input id="cPhone" name="phone" type="tel" autocomplete="tel" dir="ltr" placeholder="+966 5x xxx xxxx">
             </div>
             <div class="field">
-              <label for="cType">نوع الاستفسار</label>
+              <label for="cType" data-i18n="contact.type">نوع الاستفسار</label>
               <select id="cType" name="type" required>
-                <option value="">اختر النوع</option>
-                <option>طلب عرض سعر</option>
-                <option>حجز موقع تصوير</option>
-                <option>استئجار معدات</option>
-                <option>الانضمام كمزوّد خدمة</option>
-                <option>استفسار عام</option>
+                <option value="" data-i18n="contact.typePick">اختر النوع</option>
+                <option value="quote" data-i18n="contact.t1">طلب عرض سعر</option>
+                <option value="location" data-i18n="contact.t2">حجز موقع تصوير</option>
+                <option value="gear" data-i18n="contact.t3">استئجار معدات</option>
+                <option value="vendor" data-i18n="contact.t4">الانضمام كمزوّد خدمة</option>
+                <option value="general" data-i18n="contact.t5">استفسار عام</option>
               </select>
             </div>
           </div>
           <div class="field">
-            <label for="cMsg">الرسالة</label>
+            <label for="cMsg" data-i18n="contact.msg">الرسالة</label>
             <textarea id="cMsg" name="message" rows="5" required></textarea>
           </div>
           <p class="form-error" id="contactError" role="alert" hidden></p>
-          <button type="submit" class="btn btn-gold btn-block">إرسال الرسالة</button>
+          <button type="submit" class="btn btn-gold btn-block" data-i18n="contact.send">إرسال الرسالة</button>
         </form>
       </div>
     </section>
@@ -342,19 +343,19 @@
           <img src="assets/logo-mark.svg" alt="" class="logo-mark" width="38" height="38">
           <span class="logo-text">RAFECUT</span>
         </a>
-        <p class="muted">كل ما يحتاجه إنتاجك، في مكان واحد.</p>
+        <p class="muted" data-i18n="footer.tagline">كل ما يحتاجه إنتاجك، في مكان واحد.</p>
       </div>
-      <nav class="footer-links" aria-label="روابط التذييل">
-        <a href="#home">الرئيسية</a>
-        <a href="#locations">مواقع التصوير</a>
-        <a href="#equipment">المعدات والطاقم</a>
-        <a href="#hospitality">الفنادق والمطاعم</a>
-        <a href="#post">المونتاج والتلوين</a>
-        <a href="#contact">تواصل معنا</a>
+      <nav class="footer-links" data-i18n-aria="aria.footer" aria-label="روابط التذييل">
+        <a href="#home" data-i18n="nav.home">الرئيسية</a>
+        <a href="#locations" data-i18n="nav.locations">مواقع التصوير</a>
+        <a href="#equipment" data-i18n="nav.equipment">المعدات والطاقم</a>
+        <a href="#hospitality" data-i18n="nav.hospitality">الفنادق والمطاعم</a>
+        <a href="#post" data-i18n="nav.post">المونتاج والتلوين</a>
+        <a href="#contact" data-i18n="nav.contact">تواصل معنا</a>
       </nav>
     </div>
     <div class="container footer-bottom">
-      <p>© <span id="year"></span> RAFECUT. جميع الحقوق محفوظة.</p>
+      <p>© <span id="year"></span> RAFECUT. <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span></p>
     </div>
   </footer>
 
@@ -362,18 +363,19 @@
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
     <div class="modal-backdrop" data-close></div>
     <div class="modal-box">
-      <button class="modal-x" data-close aria-label="إغلاق">×</button>
+      <button class="modal-x" data-close data-i18n-aria="aria.close" aria-label="إغلاق">×</button>
       <div class="modal-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
       </div>
       <h3 id="modalTitle"></h3>
       <p id="modalText" class="muted"></p>
       <ul id="modalList" class="modal-list"></ul>
-      <button class="btn btn-gold" data-close>حسنًا</button>
+      <button class="btn btn-gold" data-close data-i18n="modal.ok">حسنًا</button>
     </div>
   </div>
 
   <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
