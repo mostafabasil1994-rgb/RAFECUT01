@@ -219,12 +219,22 @@
         <div class="section-head reveal">
           <p class="eyebrow" data-i18n="hosp.eyebrow"><span class="num">06</span> الفنادق والمطاعم</p>
           <h2 class="section-title" data-i18n="hosp.title">راحة فريقك جزء من الإنتاج</h2>
+          <p class="muted" data-i18n="hosp.text">الفنادق العاملة في الموصل وأبرز 15 مطعمًا، جمعناها من مصادر منشورة وتحققنا من كل منها. الأسعار تقريبية وتُؤكَّد عند الحجز.</p>
         </div>
 
         <div class="tabs-row reveal">
           <div class="tabs" role="tablist" data-tabs="hosp">
             <button class="tab active" role="tab" aria-selected="true" data-tab="hotels" data-i18n="hosp.tabHotels">الفنادق</button>
             <button class="tab" role="tab" aria-selected="false" data-tab="restaurants" data-i18n="hosp.tabRest">المطاعم</button>
+          </div>
+          <div class="hosp-filters">
+          <div class="field inline">
+            <label for="fBank" data-i18n="hosp.bank">الساحل</label>
+            <select id="fBank">
+              <option value="all" data-i18n="hosp.all">الكل</option>
+              <option value="left" data-i18n="bank.left">الساحل الأيسر</option>
+              <option value="right" data-i18n="bank.right">الساحل الأيمن</option>
+            </select>
           </div>
           <div class="field inline">
             <label for="fBudget" data-i18n="hosp.budget">الميزانية</label>
@@ -235,7 +245,9 @@
               <option value="3" data-i18n="level.3">فاخر</option>
             </select>
           </div>
+          </div>
         </div>
+        <p class="hosp-count" id="hospCount" aria-live="polite"></p>
 
         <div class="tab-panel active" data-panel="hotels">
           <div class="grid cards-3" id="hotelsGrid"></div>
@@ -243,7 +255,7 @@
         <div class="tab-panel" data-panel="restaurants">
           <div class="grid cards-3" id="restaurantsGrid"></div>
         </div>
-        <p class="empty" id="hospEmpty" data-i18n="hosp.empty" hidden>لا توجد نتائج ضمن هذه الميزانية.</p>
+        <p class="empty" id="hospEmpty" data-i18n="hosp.empty" hidden>لا توجد نتائج مطابقة للفلاتر.</p>
       </div>
     </section>
 

@@ -74,11 +74,14 @@
 
   $$("[data-icon]").forEach((el) => (el.innerHTML = icon(el.dataset.icon)));
 
-  /* Card media with graceful fallback when the placeholder image can't load */
-  const media = (src, alt, fallbackIcon) => `
+  /* Card media: original illustration underneath, real photo on top once it exists.
+     Either layer removes itself if its file is missing, leaving the icon fallback. */
+  const artFor = (img) => (img ? img.replace(/^images\//, "images/art/").replace(/\.jpe?g$/i, ".svg") : "");
+  const media = (src, alt, fallbackIcon, art = artFor(src)) => `
     <div class="card-media">
       <span class="media-fallback">${icon(fallbackIcon)}</span>
-      ${src ? `<img src="${src}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">` : ""}
+      ${art ? `<img class="art" src="${art}" alt="" aria-hidden="true" loading="lazy" onerror="this.remove()">` : ""}
+      ${src ? `<img class="photo" src="${src}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">` : ""}
     </div>`;
 
   /* Booking buttons carry their modal content in data attributes */
@@ -272,39 +275,55 @@
   }
 
   /* ---------- Hotels & restaurants ---------- */
-  const fBudget = $("#fBudget");
+  const fBudget = $("#fBudget"), fBank = $("#fBank");
   let hospTab = "hotels";
   const dots = (lvl) =>
     `<span class="level" aria-label="${ui().priceLevel}: ${levelTag(lvl)}">${"<b></b>".repeat(lvl)}${"<i></i>".repeat(3 - lvl)}</span>`;
+  const HOTEL_ART = { 1: "hotel-budget", 2: "hotel-mid", 3: "hotel-upscale" };
+  const hospArt = (h, kind) => (kind === "hotels"
+    ? `images/art/hotels/${HOTEL_ART[h.level]}.svg`
+    : `images/art/restaurants/rest-${h.kind || "traditional"}.svg`);
+  const placeOf = (h) => {
+    const area = ui().cities[h.area] ? city(h.area) : tr(h, "area");
+    return !area || area === ui().mosul ? ui().mosul : `${area}${ui().listSep}${ui().mosul}`;
+  };
 
   function hospCard(h, kind) {
     const name = tr(h, "name"), cuisine = tr(h, "cuisine"), unit = ui().per[h.unit];
+    const price = h.price ? `${sar(h.price)} <small>/ ${unit}</small>` : `<small>${ui().priceOnRequest}</small>`;
+    const priceText = h.price ? `${sar(h.price)} / ${unit}` : ui().priceOnRequest;
+    const bank = h.bank && h.bank !== "unknown" ? ui().banks[h.bank] : "";
     return `
       <article class="card item-card reveal">
-        ${media(h.img, name, kind === "hotels" ? "hotel" : "star")}
+        ${media(h.img, name, kind === "hotels" ? "hotel" : "star", hospArt(h, kind))}
         <span class="tag">${levelTag(h.level)}</span>
+        ${h.stars ? `<span class="stock" aria-label="${h.stars} ${ui().starsLabel}">${"★".repeat(h.stars)}</span>` : ""}
         <div class="card-body">
           <h3>${name}</h3>
-          <p class="meta">${icon("pin")} ${where(h.area)}${cuisine ? ` · ${cuisine}` : ""}</p>
+          <p class="meta">${icon("pin")} ${placeOf(h)}${bank ? ` · ${bank}` : ""}</p>
+          ${cuisine ? `<p class="desc">${cuisine}</p>` : ""}
           <div class="card-foot">
             <div>
               ${dots(h.level)}
-              <p class="price">${sar(h.price)} <small>/ ${unit}</small></p>
+              <p class="price">${price}</p>
             </div>
-            ${bookBtn("btn-gold", kind, name, `${where(h.area)} · ${sar(h.price)} / ${unit}`, ui().book)}
+            ${bookBtn("btn-gold", kind, name, `${placeOf(h)} · ${priceText}`, ui().book)}
           </div>
         </div>
       </article>`;
   }
   function renderHosp() {
-    const match = (h) => fBudget.value === "all" || h.level === +fBudget.value;
+    const match = (h) => (fBudget.value === "all" || h.level === +fBudget.value) &&
+      (fBank.value === "all" || h.bank === fBank.value);
     const hotels = HOTELS.filter(match), rest = RESTAURANTS.filter(match);
     $("#hotelsGrid").innerHTML = hotels.map((h) => hospCard(h, "hotels")).join("");
     $("#restaurantsGrid").innerHTML = rest.map((h) => hospCard(h, "restaurants")).join("");
-    $("#hospEmpty").hidden = (hospTab === "hotels" ? hotels : rest).length > 0;
+    const shown = hospTab === "hotels" ? hotels : rest;
+    $("#hospEmpty").hidden = shown.length > 0;
+    $("#hospCount").textContent = ui().hospCount(shown.length, hospTab === "hotels" ? HOTELS.length : RESTAURANTS.length, hospTab);
     observeReveals($("#hospitality"));
   }
-  fBudget.addEventListener("change", renderHosp);
+  [fBudget, fBank].forEach((s) => s.addEventListener("change", renderHosp));
 
   /* ---------- Tabs ---------- */
   $$("[data-tabs]").forEach((group) => {
