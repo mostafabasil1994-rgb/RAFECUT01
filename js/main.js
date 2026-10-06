@@ -55,6 +55,10 @@
     lighting: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
     sound: '<rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/>',
     drone: '<circle cx="5" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M7 7l2.5 2.5M17 7l-2.5 2.5M7 17l2.5-2.5M17 17l-2.5-2.5"/>',
+    arch: '<path d="M4 21V11a8 8 0 0 1 16 0v10M8 21v-9a4 4 0 0 1 8 0v9M2 21h20"/>',
+    house: '<path d="M3 11l9-7 9 7M5 9.5V20h14V9.5M10 20v-6h4v6"/>',
+    alley: '<path d="M3 3l6 4v14M21 3l-6 4v14M9 21h6M9 11h6"/>',
+    lens: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 7l3.5 8M7.5 9.5l8.5 1M8.5 15.5L14 8"/>',
     star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
     mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6l8.5 7 8.5-7"/>',
     phone: '<path d="M5 3h3.5l1.5 4.5-2 1.5a11 11 0 0 0 7 7l1.5-2 4.5 1.5V19a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
@@ -124,7 +128,7 @@
       const el = e.target, target = +el.dataset.count, start = performance.now();
       const tick = (t) => {
         const p = Math.min((t - start) / 1400, 1);
-        el.textContent = "+" + fmt(Math.round(target * (1 - Math.pow(1 - p, 3))));
+        el.textContent = fmt(Math.round(target * (1 - Math.pow(1 - p, 3))));
         if (p < 1) requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
@@ -167,7 +171,7 @@
     const first = select.options[0];
     select.innerHTML = "";
     if (keepFirst) select.add(first);
-    CITIES.forEach((c) => select.add(new Option(city(c), c)));
+    AREAS.forEach((c) => select.add(new Option(city(c), c)));
     select.value = val;
   }
 
@@ -184,27 +188,28 @@
   }
 
   /* ---------- Locations ---------- */
-  const fCity = $("#fCity"), fType = $("#fType"), fPrice = $("#fPrice");
+  const fCity = $("#fCity"), fType = $("#fType");
+  const TYPE_ICON = { heritage: "arch", residential: "house", street: "alley" };
+  const where = (area) => (area === "mosul" || area === "oldcity" ? city(area) : `${city(area)}${ui().listSep}${ui().mosul}`);
 
   function renderLocations() {
-    const [min, max] = fPrice.value === "all" ? [0, Infinity] : fPrice.value.split("-").map(Number);
     const list = LOCATIONS.filter((l) =>
-      (fCity.value === "all" || l.city === fCity.value) &&
-      (fType.value === "all" || l.type === fType.value) &&
-      l.price >= min && l.price < max);
-    const per = ui().perDay;
+      (fCity.value === "all" || l.area === fCity.value) &&
+      (fType.value === "all" || l.type === fType.value));
+    const per = ui().perDay, price = sar(LOCATION_RATE);
     $("#locationsGrid").innerHTML = list.map((l) => {
       const name = tr(l, "name");
       return `
       <article class="card item-card reveal">
-        ${media(l.img, name, "location")}
+        ${media(l.img, name, TYPE_ICON[l.type])}
         <span class="tag">${label(`ltype.${l.type}`)}</span>
         <div class="card-body">
           <h3>${name}</h3>
-          <p class="meta">${icon("pin")} ${city(l.city)}</p>
+          <p class="meta">${icon("pin")} ${where(l.area)}</p>
+          <p class="desc">${tr(l, "desc")}</p>
           <div class="card-foot">
-            <p class="price">${sar(l.price)} <small>/ ${per}</small></p>
-            ${bookBtn("btn-gold", "location", name, `${city(l.city)} · ${sar(l.price)} / ${per}`, ui().book)}
+            <p class="price">${price} <small>/ ${per}</small></p>
+            ${bookBtn("btn-gold", "location", name, `${where(l.area)} · ${price} / ${per}`, ui().book)}
           </div>
         </div>
       </article>`;
@@ -212,14 +217,15 @@
     $("#locationsEmpty").hidden = list.length > 0;
     observeReveals($("#locationsGrid"));
   }
-  [fCity, fType, fPrice].forEach((s) => s.addEventListener("change", renderLocations));
+  [fCity, fType].forEach((s) => s.addEventListener("change", renderLocations));
   $("#fReset").addEventListener("click", () => {
-    fCity.value = fType.value = fPrice.value = "all";
+    fCity.value = fType.value = "all";
     renderLocations();
   });
 
   /* ---------- Equipment & crew ---------- */
   let gearCat = "all";
+  const GEAR_ICON = { camera: "camera", cine: "film", lens: "lens", cinelens: "lens" };
   function renderGear() {
     const list = GEAR.filter((g) => gearCat === "all" || g.cat === gearCat);
     const per = ui().perDay;
@@ -227,8 +233,9 @@
       const name = tr(g, "name");
       return `
       <article class="card item-card reveal">
-        ${media(g.img, name, g.cat)}
+        ${media(g.img, name, GEAR_ICON[g.cat])}
         <span class="tag">${ui().gearCats[g.cat]}</span>
+        ${g.qty ? `<span class="stock">${ui().inStock(g.qty)}</span>` : ""}
         <div class="card-body">
           <h3 dir="auto">${name}</h3>
           <p class="meta">${tr(g, "desc")}</p>
@@ -249,20 +256,16 @@
     renderGear();
   });
 
-  const initials = (name) => name.split(/[\s-]+/).filter((w) => w && w !== "Al").map((w) => w[0]).slice(0, 2).join(lang === "en" ? "" : " ");
   function renderCrew() {
     $("#crewGrid").innerHTML = CREW.map((c) => {
-      const name = tr(c, "name"), role = tr(c, "role");
+      const role = tr(c, "role");
       return `
       <article class="card crew-card reveal">
-        <div class="avatar" aria-hidden="true"><span>${initials(name)}</span></div>
-        <h3>${name}</h3>
-        <p class="role">${role}</p>
-        <ul class="crew-meta">
-          <li><strong>${c.years}</strong> ${ui().years}</li>
-          <li>${icon("pin")} ${city(c.city)}</li>
-        </ul>
-        ${bookBtn("btn-ghost btn-block", "crew", name, role, ui().contact)}
+        <div class="avatar" aria-hidden="true">${icon(c.icon)}</div>
+        <h3>${role}</h3>
+        <p class="crew-desc">${tr(c, "desc")}</p>
+        <ul class="crew-meta"><li>${icon("pin")} ${ui().mosul}</li></ul>
+        ${bookBtn("btn-ghost btn-block", "crew", role, ui().mosul, ui().contact)}
       </article>`;
     }).join("");
     observeReveals($("#crewGrid"));
@@ -282,13 +285,13 @@
         <span class="tag">${levelTag(h.level)}</span>
         <div class="card-body">
           <h3>${name}</h3>
-          <p class="meta">${icon("pin")} ${city(h.city)}${cuisine ? ` · ${cuisine}` : ""}</p>
+          <p class="meta">${icon("pin")} ${where(h.area)}${cuisine ? ` · ${cuisine}` : ""}</p>
           <div class="card-foot">
             <div>
               ${dots(h.level)}
               <p class="price">${sar(h.price)} <small>/ ${unit}</small></p>
             </div>
-            ${bookBtn("btn-gold", kind, name, `${city(h.city)} · ${sar(h.price)} / ${unit}`, ui().book)}
+            ${bookBtn("btn-gold", kind, name, `${where(h.area)} · ${sar(h.price)} / ${unit}`, ui().book)}
           </div>
         </div>
       </article>`;
@@ -335,7 +338,7 @@
         ${p.featured ? `<span class="badge">${ui().popular}</span>` : ""}
         <h3>${name}</h3>
         <p class="muted small">${tr(p, "note")}</p>
-        <p class="price-big"><small>${ui().per[p.unit]}</small> ${fmt(p.price)} <span>${lang === "en" ? "SAR" : "ر.س"}</span></p>
+        <p class="price-big"><small>${ui().per[p.unit]}</small> <bdi>$${fmt(p.price)}</bdi></p>
         <ul>${tr(p, "features").map((f) => `<li>${f}</li>`).join("")}</ul>
         <button class="btn ${p.featured ? "btn-gold" : "btn-ghost"} btn-block" data-book="package" data-name="${esc(`${ui().pkg} ${name}`)}" data-extra="${esc(sar(p.price))}">${ui().choose}</button>
       </div>`;
