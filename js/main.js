@@ -616,7 +616,7 @@
     budget.style.setProperty("--p", ((v - budget.min) / (budget.max - budget.min)) * 100 + "%");
   };
   budget.addEventListener("input", updateBudget);
-  $("#pDate").min = new Date().toISOString().slice(0, 10);
+  { const d = new Date(); $("#pDate").min = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
 
   let plannerTried = false;
   function validatePlanner() {
@@ -698,6 +698,7 @@
   const savePack = () => { try { localStorage.setItem(PACK_KEY, JSON.stringify(pack)); } catch (_) { /* ignore */ } };
 
   const DAY_MS = 86400000;
+  const localToday = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
   const isoDate = (v) => /^\d{4}-\d{2}-\d{2}$/.test(v);
   function spanDays() {
     if (!isoDate(pack.from) || !isoDate(pack.to)) return null;
@@ -772,10 +773,14 @@
 
   function renderPack() {
     const P = ui().pack, span = spanDays();
-    packFrom.value = pack.from;
-    packTo.value = pack.to;
-    packFrom.min = new Date().toISOString().slice(0, 10);
-    packTo.min = pack.from || packFrom.min;
+    // only touch the date inputs when needed: rewriting min/value on every change
+    // event wipes a date the user is typing by hand
+    if (document.activeElement !== packFrom && packFrom.value !== pack.from) packFrom.value = pack.from;
+    if (document.activeElement !== packTo && packTo.value !== pack.to) packTo.value = pack.to;
+    const today = localToday();
+    if (packFrom.min !== today) packFrom.min = today;
+    const toMin = pack.from || today;
+    if (packTo.min !== toMin) packTo.min = toMin;
     const spanEl = $("#packSpan");
     spanEl.textContent = span === null ? P.pickDates : span === 0 ? P.badRange : P.span(span);
     spanEl.classList.toggle("bad", span === 0);
