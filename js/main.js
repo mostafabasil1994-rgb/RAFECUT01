@@ -59,6 +59,8 @@
     house: '<path d="M3 11l9-7 9 7M5 9.5V20h14V9.5M10 20v-6h4v6"/>',
     alley: '<path d="M3 3l6 4v14M21 3l-6 4v14M9 21h6M9 11h6"/>',
     lens: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 7l3.5 8M7.5 9.5l8.5 1M8.5 15.5L14 8"/>',
+    chev: '<path d="M9 5l7 7-7 7"/>',
+    expand: '<path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/>',
     clapper: '<rect x="3" y="10" width="18" height="11" rx="1.5"/><path d="M3 10l17.2-3.1-.9-3.8L2.4 6.2z"/><path d="M7.2 5.4l2.4 3.4M12 4.5l2.4 3.4M16.8 3.6l2.3 3.3M3 14h18"/>',
     bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
     star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
@@ -76,15 +78,228 @@
 
   $$("[data-icon]").forEach((el) => (el.innerHTML = icon(el.dataset.icon)));
 
-  /* Card media: original illustration underneath, real photo on top once it exists.
-     Either layer removes itself if its file is missing, leaving the icon fallback. */
+  /* ---------- Card media & photo galleries ----------
+     Layers, bottom to top: icon fallback, original illustration (images/art/...),
+     then a slideshow of photos: the local photo slot (images/...) followed by
+     Wikimedia Commons photos listed in each item's `gallery`. Any photo that
+     fails to load is dropped, so the illustration shows when none load. */
   const artFor = (img) => (img ? img.replace(/^images\//, "images/art/").replace(/\.jpe?g$/i, ".svg") : "");
-  const media = (src, alt, fallbackIcon, art = artFor(src)) => `
-    <div class="card-media">
+  const commonsSrc = (file, w) => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=${w}`;
+  const commonsPage = (file) => `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(file.replace(/ /g, "_"))}`;
+  const GALLERIES = new Map();   // key -> [{src, full, cap, page, illustrative}]
+  const BROKEN = new Set();      // photo URLs that failed to load
+
+  function galleryOf(item, key) {
+    if (item.gallery) return item.gallery;
+    const own = typeof PHOTOS !== "undefined" && PHOTOS[slugOf(item.img)];
+    if (own) return own;
+    if (key.startsWith("restaurants:") && typeof PHOTOS_GENERIC !== "undefined") return PHOTOS_GENERIC[item.kind || "traditional"] || [];
+    return [];
+  }
+  function slidesFor(item, alt, key) {
+    const out = [];
+    if (item.img) out.push({ src: item.img, full: item.img, cap: alt, page: "", own: true });
+    galleryOf(item, key).forEach((g) => out.push({
+      src: commonsSrc(g.file, 900), full: commonsSrc(g.file, 1800),
+      cap: (lang === "en" ? g.en : g.ar) || alt, page: commonsPage(g.file), illustrative: !!g.illustrative,
+    }));
+    return out.filter((x) => !BROKEN.has(x.src));
+  }
+
+  const media = (item, alt, fallbackIcon, art, key) => {
+    const slides = slidesFor(item, alt, key);
+    GALLERIES.set(key, slides);
+    const G = ui().gal;
+    return `
+    <div class="card-media gallery" data-gal="${esc(key)}" data-index="0">
       <span class="media-fallback">${icon(fallbackIcon)}</span>
       ${art ? `<img class="art" src="${art}" alt="" aria-hidden="true" loading="lazy" onerror="this.remove()">` : ""}
-      ${src ? `<img class="photo" src="${src}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">` : ""}
+      ${slides.map((x, n) => `<img class="slide${n === 0 ? " is-active" : ""}" src="${x.src}" alt="${esc(x.cap)}" loading="lazy" decoding="async" data-n="${n}">`).join("")}
+      <div class="gal-ui"${slides.length ? "" : " hidden"}>
+        <button type="button" class="gal-btn gal-prev" data-gal-step="-1" aria-label="${G.prev}">${icon("chev")}</button>
+        <button type="button" class="gal-btn gal-next" data-gal-step="1" aria-label="${G.next}">${icon("chev")}</button>
+        <span class="gal-dots" aria-hidden="true">${slides.map((_, n) => `<i${n === 0 ? ' class="on"' : ""}></i>`).join("")}</span>
+        <button type="button" class="gal-open" data-gal-open aria-label="${G.open}">${icon("expand")}<span class="gal-count" dir="ltr">${slides.length > 1 ? G.count(1, slides.length) : ""}</span></button>
+      </div>
     </div>`;
+  };
+
+  /* run fn once if img fails, including when it had already failed before we looked */
+  function whenBroken(img, fn) {
+    let done = false;
+    const once = () => { if (!done) { done = true; fn(); } };
+    img.addEventListener("error", once, { once: true });
+    setTimeout(() => { if (img.isConnected && img.complete && img.getAttribute("src") && img.naturalWidth === 0) once(); }, 0);
+  }
+  function galSlides(gal) { return $$(".slide", gal); }
+  function galShow(gal, idx) {
+    const slides = galSlides(gal);
+    if (!slides.length) return;
+    const n = ((idx % slides.length) + slides.length) % slides.length;
+    slides.forEach((im, k) => im.classList.toggle("is-active", k === n));
+    gal.dataset.index = n;
+    $$(".gal-dots i", gal).forEach((d, k) => d.classList.toggle("on", k === n));
+    const c = $(".gal-count", gal);
+    if (c) c.textContent = slides.length > 1 ? ui().gal.count(n + 1, slides.length) : "";
+  }
+  function galRefresh(gal) {
+    const slides = galSlides(gal);
+    const ui_ = $(".gal-ui", gal);
+    if (!slides.length) { ui_.hidden = true; return; }
+    ui_.hidden = false;
+    gal.classList.toggle("single", slides.length < 2);
+    $(".gal-dots", gal).innerHTML = slides.map(() => "<i></i>").join("");
+    galShow(gal, Math.min(+gal.dataset.index || 0, slides.length - 1));
+  }
+  function onSlideError(e) {
+    const im = e.target;
+    if (!im.classList || !im.classList.contains("slide") || !im.isConnected) return;
+    BROKEN.add(im.getAttribute("src"));
+    const gal = im.closest("[data-gal]");
+    const key = gal && gal.dataset.gal;
+    if (key && GALLERIES.has(key)) GALLERIES.set(key, GALLERIES.get(key).filter((x) => x.src !== im.getAttribute("src")));
+    im.remove();
+    if (gal) galRefresh(gal);
+  }
+  document.addEventListener("error", onSlideError, true); // capture: error events do not bubble
+  const initGalleries = (root) => $$(".card-media.gallery", root).forEach((g) => {
+    g.classList.toggle("single", galSlides(g).length < 2);
+    galSlides(g).forEach((im) => whenBroken(im, () => onSlideError({ target: im })));
+  });
+
+  /* autoplay while hovered (desktop), swipe on touch */
+  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let hoverTimer = 0;
+  document.addEventListener("mouseover", (e) => {
+    const gal = e.target.closest && e.target.closest(".card-media.gallery");
+    if (!gal || gal.dataset.playing || reduceMotion || galSlides(gal).length < 2) return;
+    gal.dataset.playing = "1";
+    clearInterval(hoverTimer);
+    hoverTimer = setInterval(() => galShow(gal, (+gal.dataset.index || 0) + 1), 2400);
+    gal.addEventListener("mouseleave", () => { clearInterval(hoverTimer); delete gal.dataset.playing; }, { once: true });
+  });
+  let swipe = null;
+  document.addEventListener("pointerdown", (e) => {
+    const gal = e.target.closest && e.target.closest(".card-media.gallery, .lb-stage");
+    swipe = gal ? { gal, x: e.clientX, y: e.clientY } : null;
+  });
+  document.addEventListener("pointerup", (e) => {
+    if (!swipe) return;
+    const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y, gal = swipe.gal;
+    swipe = null;
+    if (Math.abs(dx) < 40 || Math.abs(dy) > Math.abs(dx)) return;
+    const forward = document.documentElement.dir === "rtl" ? dx > 0 : dx < 0;
+    gal.dataset.swiped = "1";
+    setTimeout(() => delete gal.dataset.swiped, 50);
+    if (gal.classList.contains("lb-stage")) lbGo(lbIndex + (forward ? 1 : -1));
+    else galShow(gal, (+gal.dataset.index || 0) + (forward ? 1 : -1));
+  });
+
+  /* lightbox */
+  const lb = $("#lightbox");
+  let lbList = [], lbIndex = 0, lbLastFocus = null;
+  function lbGo(i, dirHint) {
+    if (!lbList.length) return;
+    const n = ((i % lbList.length) + lbList.length) % lbList.length;
+    const dir = dirHint || (n > lbIndex || (lbIndex === lbList.length - 1 && n === 0) ? 1 : -1);
+    const track = $(".lb-track", lb);
+    const old = $(".lb-slide.is-active", track);
+    const x = lbList[n];
+    const im = document.createElement("img");
+    im.className = "lb-slide";
+    im.alt = x.cap;
+    im.src = x.full;
+    im.style.setProperty("--from", `${(document.documentElement.dir === "rtl" ? -1 : 1) * dir * 6}%`);
+    const onFail = () => {
+      if (im.dataset.retry !== "1" && x.src !== x.full) { im.dataset.retry = "1"; im.src = x.src; whenBroken(im, onFail); }
+      else lbDrop(x);
+    };
+    whenBroken(im, onFail);
+    track.appendChild(im);
+    requestAnimationFrame(() => requestAnimationFrame(() => im.classList.add("is-active")));
+    if (old) {
+      old.style.setProperty("--to", `${(document.documentElement.dir === "rtl" ? 1 : -1) * dir * 6}%`);
+      old.classList.remove("is-active");
+      old.classList.add("is-leaving");
+      setTimeout(() => old.remove(), 650);
+    }
+    lbIndex = n;
+    const G = ui().gal;
+    $("#lbCaption").textContent = x.cap + (x.illustrative ? ` · ${G.illustrative}` : "");
+    const cr = $("#lbCredit");
+    cr.hidden = !x.page;
+    if (x.page) { cr.href = x.page; cr.textContent = G.credit; }
+    $("#lbCount").textContent = lbList.length > 1 ? G.count(n + 1, lbList.length) : "";
+    $$(".lb-thumbs button", lb).forEach((b, k) => { b.classList.toggle("on", k === n); if (k === n) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); });
+    const on = $(".lb-thumbs button.on", lb);
+    if (on && on.scrollIntoView) on.scrollIntoView({ block: "nearest", inline: "center", behavior: reduceMotion ? "auto" : "smooth" });
+  }
+  function lbThumbs() {
+    $(".lb-thumbs", lb).innerHTML = lbList.map((x, k) =>
+      `<button type="button" data-lb-go="${k}" aria-label="${ui().gal.count(k + 1, lbList.length)}"><img src="${x.src}" alt="" loading="lazy"></button>`).join("");
+    const items = lbList.slice();
+    $$(".lb-thumbs img", lb).forEach((t, k) => whenBroken(t, () => lbDrop(items[k])));
+    lb.classList.toggle("single", lbList.length < 2);
+  }
+  /* a photo that fails in the lightbox is removed everywhere */
+  function lbDrop(x) {
+    if (!x || BROKEN.has(x.src)) return;
+    BROKEN.add(x.src);
+    for (const [k, list] of GALLERIES) GALLERIES.set(k, list.filter((y) => y.src !== x.src));
+    $$(".card-media.gallery .slide").forEach((im) => { if (im.getAttribute("src") === x.src) { const g = im.closest("[data-gal]"); im.remove(); galRefresh(g); } });
+    const was = lbList.indexOf(x);
+    lbList = lbList.filter((y) => y !== x);
+    if (!lbList.length) { lbClose(); return; }
+    lbThumbs();
+    if (was === lbIndex || $(".lb-slide.is-active", lb) == null) { $(".lb-track", lb).innerHTML = ""; lbIndex = Math.min(was, lbList.length - 1); lbGo(lbIndex, 1); }
+    else { if (was < lbIndex) lbIndex--; lbGo(lbIndex, 1); }
+  }
+  function lbOpen(key, start, title) {
+    lbList = (GALLERIES.get(key) || []).filter((x) => !BROKEN.has(x.src));
+    if (!lbList.length) return;
+    lbLastFocus = document.activeElement;
+    $(".lb-track", lb).innerHTML = "";
+    $("#lbTitle").textContent = title || "";
+    lbThumbs();
+    lb.hidden = false;
+    document.body.classList.add("no-scroll");
+    requestAnimationFrame(() => lb.classList.add("show"));
+    lbIndex = start;
+    lbGo(start, 1);
+    $(".lb-x", lb).focus();
+  }
+  function lbClose() {
+    lb.classList.remove("show");
+    if ($("#pack").hidden && modal.hidden) document.body.classList.remove("no-scroll");
+    setTimeout(() => { lb.hidden = true; $(".lb-track", lb).innerHTML = ""; }, 300);
+    if (lbLastFocus && document.contains(lbLastFocus)) lbLastFocus.focus();
+  }
+  lb.addEventListener("click", (e) => {
+    if (e.target.closest("[data-lb-close]")) return lbClose();
+    const step = e.target.closest("[data-lb-step]");
+    if (step) return lbGo(lbIndex + +step.dataset.lbStep, +step.dataset.lbStep);
+    const go = e.target.closest("[data-lb-go]");
+    if (go) return lbGo(+go.dataset.lbGo);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (lb.hidden) return;
+    if (e.key === "Escape") { e.stopImmediatePropagation(); lbClose(); }
+    else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      const forward = (e.key === "ArrowLeft") === (document.documentElement.dir === "rtl");
+      lbGo(lbIndex + (forward ? 1 : -1), forward ? 1 : -1);
+    }
+  }, true);
+
+  document.addEventListener("click", (e) => {
+    const gal = e.target.closest(".card-media.gallery");
+    if (!gal || gal.dataset.swiped) return;
+    const step = e.target.closest("[data-gal-step]");
+    if (step) { e.preventDefault(); galShow(gal, (+gal.dataset.index || 0) + +step.dataset.galStep); return; }
+    if (e.target.closest("[data-gal-open]") || e.target.closest(".slide")) {
+      const card = gal.closest("article");
+      lbOpen(gal.dataset.gal, +gal.dataset.index || 0, card ? ($("h3", card) || {}).textContent : "");
+    }
+  });
 
   /* Add-to-pack buttons: items are identified by their image file name */
   const slugOf = (img) => (img ? img.split("/").pop().replace(/\.\w+$/, "") : "");
@@ -214,7 +429,7 @@
       const name = tr(l, "name");
       return `
       <article class="card item-card reveal">
-        ${media(l.img, name, TYPE_ICON[l.type])}
+        ${media(l, name, TYPE_ICON[l.type], artFor(l.img), `location:${slugOf(l.img)}`)}
         <span class="tag">${label(`ltype.${l.type}`)}</span>
         <div class="card-body">
           <h3>${name}</h3>
@@ -228,6 +443,7 @@
       </article>`;
     }).join("");
     $("#locationsEmpty").hidden = list.length > 0;
+    initGalleries($("#locationsGrid"));
     observeReveals($("#locationsGrid"));
   }
   [fCity, fType].forEach((s) => s.addEventListener("change", renderLocations));
@@ -246,7 +462,7 @@
       const name = tr(g, "name");
       return `
       <article class="card item-card reveal">
-        ${media(g.img, name, GEAR_ICON[g.cat])}
+        ${media(g, name, GEAR_ICON[g.cat], artFor(g.img), `gear:${slugOf(g.img)}`)}
         <span class="tag">${ui().gearCats[g.cat]}</span>
         ${g.qty ? `<span class="stock">${ui().inStock(g.qty)}</span>` : ""}
         <div class="card-body">
@@ -259,6 +475,7 @@
         </div>
       </article>`;
     }).join("");
+    initGalleries($("#gearGrid"));
     observeReveals($("#gearGrid"));
   }
   $("#gearFilter").addEventListener("click", (e) => {
@@ -305,7 +522,7 @@
     const bank = h.bank && h.bank !== "unknown" ? ui().banks[h.bank] : "";
     return `
       <article class="card item-card reveal">
-        ${media(h.img, name, kind === "hotels" ? "hotel" : "star", hospArt(h, kind))}
+        ${media(h, name, kind === "hotels" ? "hotel" : "star", hospArt(h, kind), `${kind}:${slugOf(h.img)}`)}
         <span class="tag">${levelTag(h.level)}</span>
         ${h.stars ? `<span class="stock" aria-label="${h.stars} ${ui().starsLabel}">${"★".repeat(h.stars)}</span>` : ""}
         <div class="card-body">
@@ -330,6 +547,7 @@
     $("#restaurantsGrid").innerHTML = rest.map((h) => hospCard(h, "restaurants")).join("");
     const shown = hospTab === "hotels" ? hotels : rest;
     $("#hospEmpty").hidden = shown.length > 0;
+    initGalleries($("#hospitality"));
     $("#hospCount").textContent = ui().hospCount(shown.length, hospTab === "hotels" ? HOTELS.length : RESTAURANTS.length, hospTab);
     observeReveals($("#hospitality"));
   }

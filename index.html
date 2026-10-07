@@ -426,6 +426,25 @@
     <button type="button" class="toast-btn" data-pack-open data-i18n="pack.view">عرض الكلاكيت</button>
   </div>
 
+  <!-- ============ Photo lightbox ============ -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lbTitle" hidden>
+    <div class="lb-backdrop" data-lb-close></div>
+    <div class="lb-frame">
+      <header class="lb-head">
+        <h3 id="lbTitle"></h3>
+        <span class="lb-count" id="lbCount" dir="ltr"></span>
+        <button type="button" class="lb-x" data-lb-close data-i18n-aria="aria.close" aria-label="إغلاق">×</button>
+      </header>
+      <div class="lb-stage">
+        <div class="lb-track"></div>
+        <button type="button" class="lb-nav lb-prev" data-icon="chev" data-lb-step="-1" data-i18n-aria="gal.prev" aria-label="الصورة السابقة"></button>
+        <button type="button" class="lb-nav lb-next" data-icon="chev" data-lb-step="1" data-i18n-aria="gal.next" aria-label="الصورة التالية"></button>
+      </div>
+      <p class="lb-cap"><span id="lbCaption"></span> <a id="lbCredit" target="_blank" rel="noopener" hidden></a></p>
+      <div class="lb-thumbs"></div>
+    </div>
+  </div>
+
   <!-- ============ Modal ============ -->
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
     <div class="modal-backdrop" data-close></div>
@@ -442,6 +461,7 @@
   </div>
 
   <script src="js/data.js"></script>
+  <script src="js/photos.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
 </body>

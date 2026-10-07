@@ -10,6 +10,8 @@ const STATIC_EN = {
   "aria.footer": "Footer links",
   "aria.close": "Close",
   "aria.pack": "Clapperboard",
+  "gal.prev": "Previous photo",
+  "gal.next": "Next photo",
 
   "pack.eyebrow": "Build Your Package",
   "pack.title": "Build it piece by piece.<br>Watch the total add up.",
@@ -162,6 +164,10 @@ const UI = {
     priceOnRequest: "السعر عند الطلب", starsLabel: "نجوم",
     banks: { left: "الساحل الأيسر", right: "الساحل الأيمن" },
     hospCount: (n, total, tab) => (tab === "hotels" ? `يعرض ${n} من ${total} فندقًا في الموصل` : `يعرض ${n} من ${total} مطعمًا في الموصل`),
+    gal: {
+      prev: "الصورة السابقة", next: "الصورة التالية", open: "عرض الصور",
+      count: (i, n) => `${i} / ${n}`, credit: "المصدر: ويكيميديا كومنز", illustrative: "صورة توضيحية",
+    },
     pack: {
       add: "أضف للكلاكيت", inPack: "في الكلاكيت ✓", addLabel: "أضف إلى الكلاكيت",
       added: (n) => `أُضيف «${n}» إلى الكلاكيت`,
@@ -218,6 +224,10 @@ const UI = {
     priceOnRequest: "Price on request", starsLabel: "stars",
     banks: { left: "Left bank", right: "Right bank" },
     hospCount: (n, total, tab) => `Showing ${n} of ${total} ${tab === "hotels" ? "hotels" : "restaurants"} in Mosul`,
+    gal: {
+      prev: "Previous photo", next: "Next photo", open: "View photos",
+      count: (i, n) => `${i} / ${n}`, credit: "Source: Wikimedia Commons", illustrative: "illustrative photo",
+    },
     pack: {
       add: "Add", inPack: "Added ✓", addLabel: "Add to Clapperboard",
       added: (n) => `Added “${n}” to your Clapperboard`,
