@@ -102,6 +102,9 @@ const PHOTOS = {
   ],
 };
 
+/* ---- Restaurants with a related Mosul photo ---- */
+PHOTOS["abo-jana"] = [P("Iraqi Masgouf Restaurant-Mosul 01.jpg", "مطعم مسكوف في الموصل", "A masgouf restaurant in Mosul", true)];
+
 /* Fallback photos for hotels and restaurants without their own photo */
 const PHOTOS_GENERIC = {
   traditional: [P("Iraqi Masgouf Restaurant-Mosul 01.jpg", "مطعم مسكوف في الموصل", "A masgouf restaurant in Mosul", true)],

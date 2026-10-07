@@ -111,7 +111,7 @@ const STATIC_EN = {
   "hosp.title": "Your team's comfort is part of the production",
   "hosp.tabHotels": "Hotels",
   "hosp.tabRest": "Restaurants",
-  "hosp.text": "Hotels operating in Mosul and the 15 most notable restaurants, compiled from published sources and checked one by one. Prices are approximate and confirmed at booking.",
+  "hosp.text": "14 operating hotels in Mosul and 15 notable restaurants, compiled from published sources (each backed by at least two independent sources or a news report). Prices are approximate and confirmed at booking.",
   "hosp.bank": "Bank",
   "bank.left": "Left bank (east)",
   "bank.right": "Right bank (west)",
@@ -162,6 +162,7 @@ const UI = {
     gearCats: { camera: "كاميرا", cine: "كاميرا سينمائية", lens: "عدسة", cinelens: "عدسة سينما" },
     inStock: (n) => `متوفر: ${n}`, mosul: "الموصل",
     priceOnRequest: "السعر عند الطلب", starsLabel: "نجوم",
+    sources: (n) => (n === 1 ? "المصدر" : n === 2 ? "مصدران" : n <= 10 ? `${n} مصادر` : `${n} مصدرًا`),
     banks: { left: "الساحل الأيسر", right: "الساحل الأيمن" },
     hospCount: (n, total, tab) => (tab === "hotels" ? `يعرض ${n} من ${total} فندقًا في الموصل` : `يعرض ${n} من ${total} مطعمًا في الموصل`),
     gal: {
@@ -222,6 +223,7 @@ const UI = {
     gearCats: { camera: "Camera", cine: "Cinema camera", lens: "Lens", cinelens: "Cinema lens" },
     inStock: (n) => `${n} available`, mosul: "Mosul",
     priceOnRequest: "Price on request", starsLabel: "stars",
+    sources: (n) => `${n} ${n === 1 ? "source" : "sources"}`,
     banks: { left: "Left bank", right: "Right bank" },
     hospCount: (n, total, tab) => `Showing ${n} of ${total} ${tab === "hotels" ? "hotels" : "restaurants"} in Mosul`,
     gal: {

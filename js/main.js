@@ -529,6 +529,7 @@
           <h3>${name}</h3>
           <p class="meta">${icon("pin")} ${placeOf(h)}${bank ? ` · ${bank}` : ""}</p>
           ${cuisine ? `<p class="desc">${cuisine}</p>` : ""}
+          ${h.sources && h.sources.length ? `<a class="src-link" href="${esc(h.sources[0])}" target="_blank" rel="noopener">${ui().sources(h.sources.length)}</a>` : ""}
           <div class="card-foot">
             <div>
               ${dots(h.level)}
